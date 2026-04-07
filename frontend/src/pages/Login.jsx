@@ -288,8 +288,7 @@ const Login = () => {
       console.log("login response" , res)
 
       if (res.data.success) {
-          dispatch(setCredentials(res.data.department))
-          dispatch(setCredentials(res.data.token))
+          dispatch(setCredentials({ department: res.data.department, token: res.data.token }))
 
 
         if (rememberMe) {
