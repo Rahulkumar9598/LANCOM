@@ -635,7 +635,7 @@ const Dashboard = () => {
                   </button>
                 )}
               </div>
-              <div className="grid grid-cols-5 gap-3">
+              <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
                 {loadingDepartments ? (
                   // Loading skeleton
                   Array(5).fill(0).map((_, idx) => (
