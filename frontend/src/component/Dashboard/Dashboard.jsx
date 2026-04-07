@@ -992,6 +992,7 @@ const Dashboard = () => {
   const department = useSelector(state => state.auth)
 
   console.log(department, " this is my department")
+
   const loggedInDepartment = department?.department?.department || "ADMIN";
   const dispatch = useDispatch();
   const dropdownRef = useRef(null);
@@ -1495,7 +1496,7 @@ const Dashboard = () => {
             </div>
             <div>
               <h1 className="text-white font-bold text-xl tracking-wide">LANCOM</h1>
-              <p className="text-[#FFE0B2] text-xs">Welcome Back {(department.department.headName)?.toUpperCase()}</p>
+              <p className="text-[#FFE0B2] text-xs">Welcome Back {(department?.department?.headName)?.toUpperCase()}</p>
             </div>
           </div>
 

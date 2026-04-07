@@ -2,9 +2,9 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ConstantApi from '../services/endpoints';
-import { setCredentials } from '../store/authSlice.js';
 import { useDispatch } from 'react-redux';
 import API from '../services/axiosConfig.js';
+import { setCredentials } from '../store/authSlice.js';
 // SVG Icons as inline components (no external icon library)
 
 const Icons = {
@@ -284,8 +284,14 @@ const Login = () => {
       
       
       const res = await API.post(ConstantApi.auth.login, { email: trimmedEmail, password: trimmedPassword })
+
+      console.log("login response" , res)
+
       if (res.data.success) {
           dispatch(setCredentials(res.data.department))
+          dispatch(setCredentials(res.data.token))
+
+
         if (rememberMe) {
           localStorage.setItem('rememberedEmail', trimmedEmail);
           localStorage.setItem('rememberedPassword', trimmedPassword);
