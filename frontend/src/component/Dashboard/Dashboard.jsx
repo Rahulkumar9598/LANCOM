@@ -1107,6 +1107,7 @@ const Dashboard = () => {
   const [tasksAssignedToMe, setTasksAssignedToMe] = useState([]);
   const [tasksICreated, setTasksICreated] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [creatingTask, setCreatingTask] = useState(false);
 
   // State for dynamic departments from backend
   const [allDepartments, setAllDepartments] = useState([]);
@@ -1377,11 +1378,11 @@ const Dashboard = () => {
     getTasksCreatedByMe();
   }, []);
 
-const [taskForm, setTaskForm] = useState({
-  title: "",
-  description: "",
-  assignedTo: "",  
-});
+  const [taskForm, setTaskForm] = useState({
+    title: "",
+    description: "",
+    assignedTo: "",
+  });
 
   const getCalendarDays = () => {
     // Get current date dynamically
@@ -1434,6 +1435,10 @@ const [taskForm, setTaskForm] = useState({
 
   const handleAssignTask = async () => {
 
+    if (creatingTask) {
+      return;
+    }
+
     if (!taskForm.assignedTo || taskForm.assignedTo === "") {
       toast.error("Please select a department first!");
       return;
@@ -1444,6 +1449,8 @@ const [taskForm, setTaskForm] = useState({
       return;
     }
     try {
+
+      setCreatingTask(true);
       const newTask = {
         title: taskForm.title,
         description: taskForm.description,
@@ -1472,6 +1479,9 @@ const [taskForm, setTaskForm] = useState({
     } catch (error) {
       console.log(error.response, "this is error from handleAssignTask")
       toast.error(error?.response?.data?.message)
+    }
+    finally {
+      setCreatingTask(false); // ✅ Loading end
     }
   }
 
@@ -1810,9 +1820,13 @@ const [taskForm, setTaskForm] = useState({
               <div className="flex justify-end mt-4">
                 <button
                   onClick={handleAssignTask}
-                  className="px-6 py-2 rounded-md bg-[#1A237E] hover:bg-[#283593] text-white font-semibold transition"
+                  disabled={creatingTask}
+                  className={`px-6 py-2 rounded-md text-white font-semibold transition ${creatingTask
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-[#1A237E] hover:bg-[#283593]"
+                    }`}
                 >
-                  + Create Task
+                  {creatingTask ? "Creating Task..." : "+ Create Task"}
                 </button>
               </div>
             </div>
