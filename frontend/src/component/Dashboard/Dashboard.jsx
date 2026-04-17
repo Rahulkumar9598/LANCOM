@@ -1377,11 +1377,11 @@ const Dashboard = () => {
     getTasksCreatedByMe();
   }, []);
 
-  const [taskForm, setTaskForm] = useState({
-    title: "",
-    description: "",
-    assignedTo: "QC",
-  });
+const [taskForm, setTaskForm] = useState({
+  title: "",
+  description: "",
+  assignedTo: "",  
+});
 
   const getCalendarDays = () => {
     // Get current date dynamically
