@@ -15,6 +15,7 @@ export const uploadImage = async (req, res) => {
         success: false,
         message: "No image uploaded"
       });
+      
     }
 
     // ✅ Check if file exists
