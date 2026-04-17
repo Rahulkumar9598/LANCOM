@@ -8,7 +8,7 @@ const ConstantApi = {
   },
   auth: {
     login: BASE_URL + "/api/auth/login",
-    forgotPassword:BASE_URL+"/api/auth/forgot-password"
+    // forgotPassword:BASE_URL+"/api/auth/forgot-password"
 
 
   },
