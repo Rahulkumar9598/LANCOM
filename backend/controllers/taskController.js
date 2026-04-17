@@ -3,15 +3,15 @@ import Department from '../models/Department.js';
 
 export const createTask = async (req, res) => {
   try {
-    const { title, description, createdBy, assignedTo, status, priority, dueDate, departmentId } = req.body;
+    const {title , departmentId ,createdAt ,status ,assignedTo ,createdBy ,description  } = req.body;
 
     console.log(req.body, "this is my request body");
 
     // Validate required fields
-    if (!title || !createdBy || !assignedTo || !dueDate) {
+    if (!title || !createdBy || !assignedTo ) {
       return res.status(400).json({
         success: false,
-        message: 'Missing required fields: title, createdBy, assignedTo, dueDate'
+        message: 'Missing required fields: title, createdBy, assignedTo'
       });
     }
 
@@ -88,8 +88,8 @@ export const createTask = async (req, res) => {
       createdBy: createdByDept._id,
       assignedTo: assignedToDept._id,
       status: status || 'pending',
-      priority: priority || 'medium',
-      dueDate: new Date(dueDate)
+      // priority: priority || 'medium',
+      // dueDate: new Date(dueDate)
     });
 
     // Save task to database
