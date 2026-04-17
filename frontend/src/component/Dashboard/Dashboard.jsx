@@ -21,6 +21,11 @@
 //   Plus,
 //   AlertTriangle,
 //   Building2,
+//   Bold,
+//   Italic,
+//   Underline,
+//   Type,
+//   Image as ImageIcon,
 // } from "lucide-react";
 // import { useNavigate } from 'react-router-dom';
 // import { LogOut } from 'lucide-react';
@@ -29,6 +34,12 @@
 // import { toast } from "react-toastify";
 // import API from "../../services/axiosConfig.js";
 // import { logout } from "../../store/authSlice.js";
+// import { useEditor, EditorContent } from "@tiptap/react";
+// import StarterKit from "@tiptap/starter-kit";
+// import Image from "@tiptap/extension-image";
+
+// // Simplified - removing problematic extensions
+// // @tiptap/extension-underline, @tiptap/extension-text-align, etc. are causing issues
 
 // const Dashboard = () => {
 //   const [selectedDate, setSelectedDate] = useState(null);
@@ -40,6 +51,8 @@
 //   const [tasksAssignedToMe, setTasksAssignedToMe] = useState([]);
 //   const [tasksICreated, setTasksICreated] = useState([]);
 //   const [loading, setLoading] = useState(false);
+//   const [creatingTask, setCreatingTask] = useState(false);
+//   const fileInputRef = useRef(null);
 
 //   // State for dynamic departments from backend
 //   const [allDepartments, setAllDepartments] = useState([]);
@@ -64,7 +77,7 @@
 
 //   // Array of available icons for random assignment
 //   const availableIcons = [
-//     CheckCircle, Box, Layers, ShoppingCart, BarChart3, 
+//     CheckCircle, Box, Layers, ShoppingCart, BarChart3,
 //     Server, Users, Settings, Activity, Building2, AlertCircle, Flag
 //   ];
 
@@ -231,8 +244,6 @@
 //           createdBy: task.createdBy?.department || "Unknown",
 //           assignedTo: task.assignedTo?.department || "Unknown",
 //           status: task.status,
-//           priority: task.priority,
-//           dueDate: task.dueDate?.split('T')[0] || task.dueDate,
 //           createdAt: task.createdAt?.split('T')[0] || task.createdAt,
 //           comments: task.comments || 0,
 //           attachments: task.attachments || 0,
@@ -258,8 +269,6 @@
 //           createdBy: task.createdBy?.department || "Unknown",
 //           assignedTo: task.assignedTo?.department || "Unknown",
 //           status: task.status,
-//           priority: task.priority,
-//           dueDate: task.dueDate?.split('T')[0] || task.dueDate,
 //           createdAt: task.createdAt?.split('T')[0] || task.createdAt,
 //         }));
 //         setTasksICreated(formattedTasks);
@@ -290,8 +299,6 @@
 //           createdBy: task.createdBy?.department || "Unknown",
 //           assignedTo: task.assignedTo?.department || "Unknown",
 //           status: task.status,
-//           priority: task.priority,
-//           dueDate: task.dueDate?.split('T')[0] || task.dueDate,
 //           createdAt: task.createdAt?.split('T')[0] || task.createdAt,
 //         }));
 //         setSelectedDateTasks(formattedTasks);
@@ -319,10 +326,91 @@
 //   const [taskForm, setTaskForm] = useState({
 //     title: "",
 //     description: "",
-//     assignedTo: "QC",
-//     priority: "medium",
-//     dueDate: "",
+//     assignedTo: "",
 //   });
+
+//   // Simplified Editor configuration - only working extensions
+//   const editor = useEditor({
+//     extensions: [
+//       StarterKit.configure({
+//         bold: true,
+//         italic: true,
+//         strike: true,
+//         heading: false,
+//         bulletList: true,
+//         orderedList: true,
+//       }),
+//       Image.configure({
+//         inline: true,
+//         allowBase64: false,
+//       }),
+//     ],
+//     content: taskForm.description || "<p>Write task description here...</p>",
+//     editable: true,
+//     immediatelyRender: false,
+//     onUpdate({ editor }) {
+//       const html = editor.getHTML();
+//       setTaskForm((prev) => ({
+//         ...prev,
+//         description: html === "<p></p>" ? "" : html
+//       }));
+//     },
+//   });
+
+//   // Update editor content when taskForm.description changes externally
+//   useEffect(() => {
+//     if (editor && taskForm.description !== editor.getHTML()) {
+//       const content = taskForm.description || "<p></p>";
+//       editor.commands.setContent(content);
+//     }
+//   }, [taskForm.description, editor]);
+
+//   // Text formatting functions
+//   const toggleBold = () => editor?.chain().focus().toggleBold().run();
+//   const toggleItalic = () => editor?.chain().focus().toggleItalic().run();
+//   const toggleStrike = () => editor?.chain().focus().toggleStrike().run();
+//   const toggleBulletList = () => editor?.chain().focus().toggleBulletList().run();
+//   const toggleOrderedList = () => editor?.chain().focus().toggleOrderedList().run();
+
+//   // Handle image upload from file input
+//   const handleImageUpload = async (event) => {
+//     const file = event.target.files[0];
+//     if (file && file.type.startsWith("image/")) {
+//       await uploadImage(file);
+//     }
+//   };
+
+//   // Handle drag and drop
+//   const handleImageDrop = async (event) => {
+//     event.preventDefault();
+//     const file = event.dataTransfer.files[0];
+//     if (file && file.type.startsWith("image/")) {
+//       await uploadImage(file);
+//     }
+//   };
+
+//   // Common upload function
+//   const uploadImage = async (file) => {
+//     const formData = new FormData();
+//     formData.append("image", file);
+
+//     try {
+//       const res = await API.post(ConstantApi.task.uploadImage, formData);
+//       const imageUrl = res.data.url;
+//       if (editor) {
+//         editor.chain().focus().setImage({ src: imageUrl }).run();
+//       }
+//       toast.success("Image uploaded successfully!");
+//     } catch (error) {
+//       console.error(error);
+//       toast.error("Image upload failed");
+//     }
+//   };
+
+//   // Trigger file input click
+//   const triggerFileInput = () => {
+//     fileInputRef.current?.click();
+//   };
 
 //   const getCalendarDays = () => {
 //     // Get current date dynamically
@@ -374,17 +462,38 @@
 //   const currentMonth = calendarData.month;
 
 //   const handleAssignTask = async () => {
-//     try {
-//       if (!taskForm.title || !taskForm.dueDate || !taskForm.assignedTo) return;
 
+//         console.log("1. Checking assignedTo:", taskForm.assignedTo);
+
+
+//     if (!taskForm.assignedTo || taskForm.assignedTo === "") {
+//       toast.error("Please select a department first!");
+//       return;
+//     }
+    
+//         console.log("3. Checking title:", taskForm.title);
+//     if (!taskForm.title.trim()) {
+//       toast.error("Please enter task title!");
+//       return;
+//     }
+
+
+//     console.log("5. Checking creatingTask:", creatingTask);
+//     if (creatingTask) {
+//       return;
+//     }
+
+//       console.log("7. All validations passed, creating task...");
+
+//     try {
+
+//       setCreatingTask(true);
 //       const newTask = {
 //         title: taskForm.title,
 //         description: taskForm.description,
 //         createdBy: loggedInDepartment,
 //         assignedTo: taskForm.assignedTo,
 //         status: "pending",
-//         priority: taskForm.priority,
-//         dueDate: taskForm.dueDate,
 //         createdAt: new Date().toISOString().split("T")[0],
 //         departmentId: department?.department?.id
 //       };
@@ -399,16 +508,21 @@
 //         setTaskForm({
 //           title: "",
 //           description: "",
-//           assignedTo: "QC",
-//           priority: "medium",
-//           dueDate: "",
+//           assignedTo: "",
 //         });
+//         // Clear editor content
+//         if (editor) {
+//           editor.commands.setContent("<p></p>");
+//         }
 //         getTasksAssignedToMe();
 //         getTasksCreatedByMe();
 //       }
 //     } catch (error) {
 //       console.log(error.response, "this is error from handleAssignTask")
 //       toast.error(error?.response?.data?.message)
+//     }
+//     finally {
+//       setCreatingTask(false);
 //     }
 //   }
 
@@ -468,26 +582,6 @@
 //     return "bg-red-700";
 //   };
 
-//   const getPriorityBadge = (priority) => {
-//     const map = {
-//       low: "bg-green-100 text-green-800",
-//       medium: "bg-blue-100 text-blue-800",
-//       high: "bg-orange-100 text-orange-800",
-//       urgent: "bg-red-100 text-red-800",
-//     };
-//     return map[priority] || map.medium;
-//   };
-
-//   const getPriorityIcon = (priority) => {
-//     const icons = {
-//       low: <Flag className="w-3 h-3" />,
-//       medium: <Flag className="w-3 h-3" />,
-//       high: <AlertTriangle className="w-3 h-3" />,
-//       urgent: <AlertCircle className="w-3 h-3" />,
-//     };
-//     return icons[priority];
-//   };
-
 //   const getStatusText = (status) => {
 //     if (status === "completed") return "Completed";
 //     if (status === "in_progress") return "In Progress";
@@ -518,10 +612,10 @@
 //     setTaskForm({ ...taskForm, assignedTo: deptName });
 //   };
 
+  
+
 //   const TaskDetailsModal = ({ task, onClose, onToggleStatus }) => {
 //     if (!task) return null;
-
-//     const isOverdue = new Date(task.dueDate) < new Date() && task.status !== "completed";
 
 //     return (
 //       <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
@@ -537,22 +631,9 @@
 //           </div>
 
 //           <div className="p-6 space-y-6">
-//             <div className="flex gap-2 flex-wrap">
-//               <span className={`px-3 py-1 rounded-md text-xs font-bold flex items-center gap-1 ${getPriorityBadge(task.priority)}`}>
-//                 {getPriorityIcon(task.priority)}
-//                 {task?.priority?.toUpperCase()}
-//               </span>
-//               <span className={`px-3 py-1 rounded-md text-xs font-bold flex items-center gap-1 ${task.status === "completed" ? "bg-green-100 text-green-800" :
-//                 task.status === "in_progress" ? "bg-yellow-100 text-yellow-800" :
-//                   "bg-red-100 text-red-800"
-//                 }`}>
-//                 {getStatusText(task.status)}
-//               </span>
-//             </div>
-
 //             <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
 //               <h3 className="text-xs font-bold text-gray-600 mb-2 uppercase">Description</h3>
-//               <p className="text-gray-700">{task.description}</p>
+//               <div className="text-gray-700 prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: task.description }} />
 //             </div>
 
 //             <div className="grid grid-cols-2 gap-4">
@@ -564,12 +645,7 @@
 //                 <p className="text-xs text-gray-500">Assigned To</p>
 //                 <p className="font-bold text-gray-800">{task.assignedTo}</p>
 //               </div>
-//               <div className="bg-orange-50 rounded-lg p-3">
-//                 <p className="text-xs text-gray-500">Due Date</p>
-//                 <p className={`font-bold ${isOverdue ? 'text-red-600' : 'text-gray-800'}`}>
-//                   {new Date(task.dueDate).toLocaleDateString()}
-//                 </p>
-//               </div>
+
 //               <div className="bg-green-50 rounded-lg p-3">
 //                 <p className="text-xs text-gray-500">Created At</p>
 //                 <p className="font-bold text-gray-800">{new Date(task.createdAt).toLocaleDateString()}</p>
@@ -772,61 +848,101 @@
 //                   />
 //                 </div>
 
-//                 <div>
-//                   <label className="text-gray-700 text-xs font-bold mb-1 block">ASSIGN TO *</label>
-//                   <select
-//                     value={taskForm.assignedTo}
-//                     onChange={(e) => setTaskForm({ ...taskForm, assignedTo: e.target.value })}
-//                     className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-[#1A237E] focus:outline-none"
-//                   >
-//                     {departments.map((dept) => (
-//                       <option key={dept.name} value={dept.name}>{dept.name}</option>
-//                     ))}
-//                   </select>
-//                 </div>
-
-//                 <div>
-//                   <label className="text-gray-700 text-xs font-bold mb-1 block">PRIORITY</label>
-//                   <select
-//                     value={taskForm.priority}
-//                     onChange={(e) => setTaskForm({ ...taskForm, priority: e.target.value })}
-//                     className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-[#1A237E] focus:outline-none"
-//                   >
-//                     <option value="low">Low</option>
-//                     <option value="medium">Medium</option>
-//                     <option value="high">High</option>
-//                     <option value="urgent">Urgent</option>
-//                   </select>
-//                 </div>
-
-//                 <div className="md:col-span-2">
-//                   <label className="text-gray-700 text-xs font-bold mb-1 block">DUE DATE *</label>
-//                   <input
-//                     type="date"
-//                     value={taskForm.dueDate}
-//                     onChange={(e) => setTaskForm({ ...taskForm, dueDate: e.target.value })}
-//                     className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-[#1A237E] focus:outline-none"
-//                   />
-//                 </div>
-
 //                 <div className="md:col-span-2">
 //                   <label className="text-gray-700 text-xs font-bold mb-1 block">DESCRIPTION</label>
-//                   <textarea
-//                     rows={3}
-//                     value={taskForm.description}
-//                     onChange={(e) => setTaskForm({ ...taskForm, description: e.target.value })}
-//                     placeholder="Write task details..."
-//                     className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-[#1A237E] focus:outline-none resize-none"
+                  
+//                   {/* Hidden file input */}
+//                   <input
+//                     type="file"
+//                     ref={fileInputRef}
+//                     onChange={handleImageUpload}
+//                     accept="image/*"
+//                     className="hidden"
 //                   />
+
+//                   {/* Editor Toolbar */}
+//                   <div className="flex flex-wrap gap-1 border border-gray-300 rounded-t-md p-2 bg-gray-50">
+//                     <button
+//                       type="button"
+//                       onClick={toggleBold}
+//                       className={`p-1.5 rounded hover:bg-gray-200 transition ${editor?.isActive('bold') ? 'bg-gray-300' : ''}`}
+//                       title="Bold (Ctrl+B)"
+//                     >
+//                       <Bold size={16} />
+//                     </button>
+//                     <button
+//                       type="button"
+//                       onClick={toggleItalic}
+//                       className={`p-1.5 rounded hover:bg-gray-200 transition ${editor?.isActive('italic') ? 'bg-gray-300' : ''}`}
+//                       title="Italic (Ctrl+I)"
+//                     >
+//                       <Italic size={16} />
+//                     </button>
+//                     <button
+//                       type="button"
+//                       onClick={toggleStrike}
+//                       className={`p-1.5 rounded hover:bg-gray-200 transition ${editor?.isActive('strike') ? 'bg-gray-300' : ''}`}
+//                       title="Strikethrough"
+//                     >
+//                       <Type size={16} />
+//                     </button>
+                    
+//                     <div className="w-px h-6 bg-gray-300 mx-1"></div>
+                    
+//                     <button
+//                       type="button"
+//                       onClick={toggleBulletList}
+//                       className={`p-1.5 rounded hover:bg-gray-200 transition ${editor?.isActive('bulletList') ? 'bg-gray-300' : ''}`}
+//                       title="Bullet List"
+//                     >
+//                       • List
+//                     </button>
+//                     <button
+//                       type="button"
+//                       onClick={toggleOrderedList}
+//                       className={`p-1.5 rounded hover:bg-gray-200 transition ${editor?.isActive('orderedList') ? 'bg-gray-300' : ''}`}
+//                       title="Numbered List"
+//                     >
+//                       1. List
+//                     </button>
+                    
+//                     <div className="w-px h-6 bg-gray-300 mx-1"></div>
+                    
+//                     <button
+//                       type="button"
+//                       onClick={triggerFileInput}
+//                       className="p-1.5 rounded hover:bg-gray-200 transition"
+//                       title="Upload Image"
+//                     >
+//                       <ImageIcon size={16} />
+//                     </button>
+//                   </div>
+
+//                   {/* Editor Content */}
+//                   <div
+//                     onDrop={handleImageDrop}
+//                     onDragOver={(e) => e.preventDefault()}
+//                     className="border border-gray-300 border-t-0 rounded-b-md p-3 min-h-[200px] cursor-text bg-white"
+//                     onClick={() => editor?.commands.focus()}
+//                   >
+//                     <EditorContent editor={editor} />
+//                   </div>
+//                   <p className="text-xs text-gray-400 mt-1">
+//                     💡 Tip: You can type text, drag & drop images, or click the image icon to upload
+//                   </p>
 //                 </div>
 //               </div>
 
 //               <div className="flex justify-end mt-4">
 //                 <button
 //                   onClick={handleAssignTask}
-//                   className="px-6 py-2 rounded-md bg-[#1A237E] hover:bg-[#283593] text-white font-semibold transition"
+//                   disabled={creatingTask}
+//                   className={`px-6 py-2 rounded-md text-white font-semibold transition ${creatingTask
+//                     ? "bg-gray-400 cursor-not-allowed"
+//                     : "bg-[#1A237E] hover:bg-[#04050c]"
+//                     }`}
 //                 >
-//                   + Create Task
+//                   {creatingTask ? "Creating Task..." : "+ Create Task"}
 //                 </button>
 //               </div>
 //             </div>
@@ -860,7 +976,7 @@
 //                     {calendarDays.map((day, idx) => {
 //                       const isToday = day.date.toDateString() === new Date().toDateString();
 //                       const hasTask = tasksAssignedToMyDept.some(
-//                         (task) => task.dueDate === day.date.toISOString().split("T")[0]
+//                         (task) => task?.dueDate === day?.date?.toISOString().split("T")[0]
 //                       );
 //                       const isSelected = selectedDate && day.date.toDateString() === selectedDate.toDateString();
 
@@ -919,7 +1035,6 @@
 //                   <h3 className="text-[#1A237E] font-bold">📤 Tasks I've Assigned</h3>
 //                 </div>
 
-//                 {/* Dynamic height - max 340px */}
 //                 <div className="max-h-[340px] overflow-y-auto">
 //                   {loading ? (
 //                     <div className="text-center py-10">Loading...</div>
@@ -928,7 +1043,7 @@
 //                   ) : (
 //                     <div className="divide-y">
 //                       {filteredTasksIAssigned.map((task) => (
-//                         <div key={task._id} onClick={() => handleTaskClick(task)} className={`p-3 hover:bg-gray-50 cursor-pointer   ${task.status === "completed" ? "bg-green-100 " : "bg-pink-100"} border border-gray-300`}>
+//                         <div key={task._id} onClick={() => handleTaskClick(task)} className={`p-3 hover:bg-gray-50 cursor-pointer ${task.status === "completed" ? "bg-green-100" : "bg-pink-100"} border border-gray-300`}>
 //                           <div className="flex items-start gap-2">
 //                             {task.status === "completed" ? (
 //                               <div className="w-4 h-4 rounded-full bg-green-500 mt-0.5"></div>
@@ -937,10 +1052,9 @@
 //                             )}
 //                             <div className="flex-1">
 //                               <p className="text-sm font-semibold text-gray-800">{task.title}</p>
-//                               <p className="text-xs text-gray-500 truncate">{task.description}</p>
+//                               <div className="text-xs text-gray-500 truncate" dangerouslySetInnerHTML={{ __html: task.description }} />
 //                               <div className="flex gap-3 mt-1 text-xs text-gray-500">
 //                                 <span>To: {task.assignedTo}</span>
-//                                 <span>Due: {new Date(task.dueDate).toLocaleDateString()}</span>
 //                               </div>
 //                             </div>
 //                             <Eye className="w-4 h-4 text-gray-400" />
@@ -960,18 +1074,17 @@
 //                   <h3 className="text-[#1A237E] font-bold">📥 Tasks Assigned to Me</h3>
 //                 </div>
 
-//                 {/* Dynamic height - max 340px, lekin kam tasks hain to auto height */}
 //                 <div className="max-h-[340px] overflow-y-auto">
 //                   {loading ? (
 //                     <div className="text-center py-10">Loading...</div>
 //                   ) : filteredTasksAssignedToMe.length === 0 ? (
 //                     <div className="text-center py-10 text-gray-500">No tasks assigned to you</div>
 //                   ) : (
-//                     <div className="divide-y ">
+//                     <div className="divide-y">
 //                       {filteredTasksAssignedToMe.map((task) => (
-//                         <div key={task._id} onClick={() => handleTaskClick(task)} className={`p-3 hover:bg-gray-50 cursor-pointer   ${task.status === "completed" ? "bg-green-100 " : "bg-pink-100"} border border-gray-300`}>
+//                         <div key={task._id} onClick={() => handleTaskClick(task)} className={`p-3 hover:bg-gray-50 cursor-pointer ${task.status === "completed" ? "bg-green-100" : "bg-pink-100"} border border-gray-300`}>
 //                           <div className="flex items-start gap-2">
-//                             {task.status === "completed" ? ( 
+//                             {task.status === "completed" ? (
 //                               <div className="w-4 h-4 rounded-full bg-green-500 mt-0.5"></div>
 //                             ) : (
 //                               <div className="w-4 h-4 rounded-full bg-red-500 mt-0.5"></div>
@@ -980,10 +1093,9 @@
 //                               <p className={`text-sm font-semibold ${task.status === "completed" ? "text-gray-400 line-through" : "text-gray-800"}`}>
 //                                 {task.title}
 //                               </p>
-//                               <p className="text-xs text-gray-500 truncate">{task.description}</p>
+//                               <div className="text-xs text-gray-500 truncate" dangerouslySetInnerHTML={{ __html: task.description }} />
 //                               <div className="flex gap-3 mt-1 text-xs text-gray-500">
 //                                 <span>From: {task.createdBy}</span>
-//                                 <span>Due: {new Date(task.dueDate).toLocaleDateString()}</span>
 //                               </div>
 //                             </div>
 //                             <Eye className="w-4 h-4 text-gray-400" />
@@ -996,7 +1108,7 @@
 //               </div>
 //             )}
 
-//             {/* Selected Date Tasks - New Dynamic Section */}
+//             {/* Selected Date Tasks */}
 //             {selectedDate && (
 //               <div className="bg-white rounded-lg border border-gray-300 overflow-hidden shadow-sm">
 //                 <div className="bg-[#E8EAF6] p-3 border-b border-gray-300 flex justify-between items-center">
@@ -1006,7 +1118,6 @@
 //                   <button onClick={() => setSelectedDate(null)} className="text-gray-500 hover:text-gray-700">✕</button>
 //                 </div>
 
-//                 {/* Dynamic height - max 340px, kam tasks hain to auto height */}
 //                 <div className="max-h-[340px] overflow-y-auto">
 //                   {dateLoading ? (
 //                     <div className="text-center py-6">
@@ -1021,7 +1132,7 @@
 //                         <div
 //                           key={task._id}
 //                           onClick={() => handleTaskClick(task)}
-//                          className={`p-3 hover:bg-gray-50 cursor-pointer   ${task.status === "completed" ? "bg-green-100 " : "bg-pink-100"} border border-gray-300`}
+//                           className={`p-3 hover:bg-gray-50 cursor-pointer ${task.status === "completed" ? "bg-green-100" : "bg-pink-100"} border border-gray-300`}
 //                         >
 //                           <div className="flex items-start gap-2">
 //                             {task.status === "completed" ? (
@@ -1035,7 +1146,7 @@
 //                               </p>
 //                               <p className="text-xs text-gray-500">To: {task.assignedTo}</p>
 //                               <p className="text-xs text-gray-500">From: {task.createdBy}</p>
-//                               <p className="text-xs text-gray-400 mt-1 line-clamp-2">{task.description || "No description"}</p>
+//                               <div className="text-xs text-gray-400 mt-1 line-clamp-2" dangerouslySetInnerHTML={{ __html: task.description || "No description" }} />
 //                             </div>
 //                             <Eye className="w-4 h-4 text-gray-400 flex-shrink-0" />
 //                           </div>
@@ -1045,7 +1156,6 @@
 //                   )}
 //                 </div>
 
-//                 {/* Optional: Show task count */}
 //                 {selectedDateTasks.length > 0 && (
 //                   <div className="px-3 py-2 border-t bg-gray-50 text-xs text-gray-500">
 //                     Total: {selectedDateTasks.length} task{selectedDateTasks.length !== 1 ? 's' : ''}
@@ -1060,12 +1170,114 @@
 //       {showTaskModal && selectedTask && (
 //         <TaskDetailsModal task={selectedTask} onClose={closeModal} onToggleStatus={toggleTaskStatus} />
 //       )}
+// {/* 
+//       <style jsx>{`
+//         .ProseMirror {
+//           outline: none;
+//           min-height: 150px;
+//         }
+//         .ProseMirror p {
+//           margin: 0 0 8px 0;
+//         }
+//         .ProseMirror img {
+//           max-width: 100%;
+//           height: auto;
+//           margin: 10px 0;
+//           border-radius: 8px;
+//         }
+//         .ProseMirror ul, .ProseMirror ol {
+//           padding-left: 20px;
+//           margin: 8px 0;
+//         }
+//         .ProseMirror strong {
+//           font-weight: bold;
+//         }
+//         .ProseMirror em {
+//           font-style: italic;
+//         }
+//       `}</style> */}
+
+
+// <style jsx global>{`
+//   .ProseMirror {
+//     outline: none;
+//     min-height: 150px;
+//   }
+//   .ProseMirror p {
+//     margin: 0 0 8px 0;
+//   }
+  
+//   /* Image size control */
+//   .ProseMirror img {
+//     max-width: 100% !important;
+//     max-height: 200px !important;
+//     width: auto !important;
+//     height: auto !important;
+//     object-fit: contain !important;
+//     margin: 10px 0 !important;
+//     border-radius: 8px !important;
+//     cursor: pointer !important;
+//     border: 1px solid #e0e0e0 !important;
+//     box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+//   }
+  
+//   .ProseMirror img:hover {
+//     opacity: 0.9;
+//     border-color: #1A237E;
+//   }
+
+//   /* ✅ FIXED List Styles */
+//   .ProseMirror ul,
+//   .ProseMirror ol {
+//     padding-left: 1.5rem !important;
+//     margin: 0.5rem 0 !important;
+//   }
+  
+//   .ProseMirror ul {
+//     list-style-type: disc !important;
+//   }
+  
+//   .ProseMirror ol {
+//     list-style-type: decimal !important;
+//   }
+  
+//   .ProseMirror li {
+//     margin: 0.25rem 0 !important;
+//     display: list-item !important;
+//   }
+  
+//   /* Make sure list items have proper markers */
+//   .ProseMirror ul li::marker,
+//   .ProseMirror ol li::marker {
+//     color: #1A237E !important;
+//   }
+  
+//   /* For nested lists */
+//   .ProseMirror ul ul {
+//     list-style-type: circle !important;
+//   }
+  
+//   .ProseMirror ol ol {
+//     list-style-type: lower-alpha !important;
+//   }
+  
+//   .ProseMirror strong {
+//     font-weight: bold;
+//   }
+  
+//   .ProseMirror em {
+//     font-style: italic;
+//   }
+  
+//   .ProseMirror-focused {
+//     outline: none;
+//   }
+// `}</style>
 //     </div>
 //   );
 // };
 
 // export default Dashboard;
-
 import React, { useMemo, useState, useEffect, useRef } from "react";
 import {
   Search,
@@ -1088,6 +1300,10 @@ import {
   Plus,
   AlertTriangle,
   Building2,
+  Bold,
+  Italic,
+  Type,
+  Image as ImageIcon,
 } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { LogOut } from 'lucide-react';
@@ -1096,6 +1312,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { toast } from "react-toastify";
 import API from "../../services/axiosConfig.js";
 import { logout } from "../../store/authSlice.js";
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Image from "@tiptap/extension-image";
 
 const Dashboard = () => {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -1108,6 +1327,7 @@ const Dashboard = () => {
   const [tasksICreated, setTasksICreated] = useState([]);
   const [loading, setLoading] = useState(false);
   const [creatingTask, setCreatingTask] = useState(false);
+  const fileInputRef = useRef(null);
 
   // State for dynamic departments from backend
   const [allDepartments, setAllDepartments] = useState([]);
@@ -1170,7 +1390,6 @@ const Dashboard = () => {
       const newIcons = { ...randomDepartmentIcons };
       allDepartments.forEach(deptName => {
         const upperDept = deptName.toUpperCase();
-        // If department doesn't have a predefined icon and no random icon yet, assign one
         if (!iconMap[upperDept] && !newIcons[upperDept]) {
           newIcons[upperDept] = getRandomIcon();
         }
@@ -1187,7 +1406,6 @@ const Dashboard = () => {
         const res = await API.post(ConstantApi.task.getAllDepartment);
         console.log(res, " this is my response ");
 
-        // Extract departments from response
         if (res.data && res.data.data) {
           setAllDepartments(res.data.data);
         }
@@ -1202,7 +1420,6 @@ const Dashboard = () => {
 
   // Dynamic departments with icons mapping
   const departments = useMemo(() => {
-    // Icon mapping for departments
     const iconMap = {
       'QC': CheckCircle,
       'PRDN': Box,
@@ -1226,11 +1443,9 @@ const Dashboard = () => {
       'mntns': Activity,
     };
 
-    // If backend data is loaded, use it
     if (allDepartments.length > 0) {
       return allDepartments.map(deptName => {
         const upperDept = deptName.toUpperCase();
-        // Use predefined icon if exists, otherwise use the random assigned icon
         const icon = iconMap[upperDept] || randomDepartmentIcons[upperDept] || Building2;
         return {
           name: upperDept,
@@ -1239,7 +1454,6 @@ const Dashboard = () => {
       });
     }
 
-    // Fallback to static departments while loading or if no data
     return [
       { name: "QC", icon: CheckCircle },
       { name: "PRDN", icon: Box },
@@ -1333,11 +1547,9 @@ const Dashboard = () => {
     }
   };
 
-  // New function to fetch tasks by date
   const fetchTasksByDate = async (date) => {
     try {
       setDateLoading(true);
-      // Use local date instead of UTC to avoid timezone issues
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const day = String(date.getDate()).padStart(2, '0');
@@ -1367,7 +1579,6 @@ const Dashboard = () => {
     }
   };
 
-  // Handle date click
   const handleDateClick = async (date) => {
     setSelectedDate(date);
     await fetchTasksByDate(date);
@@ -1384,8 +1595,89 @@ const Dashboard = () => {
     assignedTo: "",
   });
 
+  const editor = useEditor({
+    extensions: [
+      StarterKit.configure({
+        bold: true,
+        italic: true,
+        strike: true,
+        heading: false,
+        bulletList: {
+          keepMarks: true,
+          keepAttributes: true,
+        },
+        orderedList: {
+          keepMarks: true,
+          keepAttributes: true,
+        },
+      }),
+      Image.configure({
+        inline: true,
+        allowBase64: false,
+      }),
+    ],
+    content: taskForm.description || "<p>Write task description here...</p>",
+    editable: true,
+    immediatelyRender: false,
+    onUpdate({ editor }) {
+      const html = editor.getHTML();
+      setTaskForm((prev) => ({
+        ...prev,
+        description: html === "<p></p>" ? "" : html
+      }));
+    },
+  });
+
+  useEffect(() => {
+    if (editor && taskForm.description !== editor.getHTML()) {
+      const content = taskForm.description || "<p></p>";
+      editor.commands.setContent(content);
+    }
+  }, [taskForm.description, editor]);
+
+  const toggleBold = () => editor?.chain().focus().toggleBold().run();
+  const toggleItalic = () => editor?.chain().focus().toggleItalic().run();
+  const toggleStrike = () => editor?.chain().focus().toggleStrike().run();
+  const toggleBulletList = () => editor?.chain().focus().toggleBulletList().run();
+  const toggleOrderedList = () => editor?.chain().focus().toggleOrderedList().run();
+
+  const handleImageUpload = async (event) => {
+    const file = event.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      await uploadImage(file);
+    }
+  };
+
+  const handleImageDrop = async (event) => {
+    event.preventDefault();
+    const file = event.dataTransfer.files[0];
+    if (file && file.type.startsWith("image/")) {
+      await uploadImage(file);
+    }
+  };
+
+  const uploadImage = async (file) => {
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const res = await API.post(ConstantApi.task.uploadImage, formData);
+      const imageUrl = res.data.url;
+      if (editor) {
+        editor.chain().focus().setImage({ src: imageUrl }).run();
+      }
+      toast.success("Image uploaded successfully!");
+    } catch (error) {
+      console.error(error);
+      toast.error("Image upload failed");
+    }
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
+  };
+
   const getCalendarDays = () => {
-    // Get current date dynamically
     const now = new Date();
     const year = now.getFullYear();
     const month = now.getMonth();
@@ -1397,18 +1689,15 @@ const Dashboard = () => {
 
     const startOffset = startDay === 0 ? 6 : startDay - 1;
 
-    // Previous month days
     for (let i = startOffset - 1; i >= 0; i--) {
       const prevDate = new Date(year, month, -i);
       days.push({ date: prevDate, isCurrentMonth: false });
     }
 
-    // Current month days
     for (let i = 1; i <= daysInMonth; i++) {
       days.push({ date: new Date(year, month, i), isCurrentMonth: true });
     }
 
-    // Next month days
     const remaining = 42 - days.length;
     for (let i = 1; i <= remaining; i++) {
       const nextDate = new Date(year, month + 1, i);
@@ -1435,21 +1724,27 @@ const Dashboard = () => {
 
   const handleAssignTask = async () => {
 
-    if (creatingTask) {
-      return;
-    }
+    console.log("1. Checking assignedTo:", taskForm.assignedTo);
 
     if (!taskForm.assignedTo || taskForm.assignedTo === "") {
       toast.error("Please select a department first!");
       return;
     }
-
+    
+    console.log("3. Checking title:", taskForm.title);
     if (!taskForm.title.trim()) {
       toast.error("Please enter task title!");
       return;
     }
-    try {
 
+    console.log("5. Checking creatingTask:", creatingTask);
+    if (creatingTask) {
+      return;
+    }
+
+    console.log("7. All validations passed, creating task...");
+
+    try {
       setCreatingTask(true);
       const newTask = {
         title: taskForm.title,
@@ -1471,17 +1766,22 @@ const Dashboard = () => {
         setTaskForm({
           title: "",
           description: "",
-          assignedTo: "QC",
+          assignedTo: "",
         });
+
+         setSelectedDept("");
+         
+        if (editor) {
+          editor.commands.setContent("<p></p>");
+        }
         getTasksAssignedToMe();
         getTasksCreatedByMe();
       }
     } catch (error) {
       console.log(error.response, "this is error from handleAssignTask")
       toast.error(error?.response?.data?.message)
-    }
-    finally {
-      setCreatingTask(false); // ✅ Loading end
+    } finally {
+      setCreatingTask(false);
     }
   }
 
@@ -1512,7 +1812,6 @@ const Dashboard = () => {
   const tasksAssignedToMyDept = tasksAssignedToMe;
 
   const filteredTasksIAssigned = useMemo(() => {
-    // Remove department filter - only search filter
     return tasksIAssigned.filter((task) => {
       const matchesSearch =
         task.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -1523,7 +1822,6 @@ const Dashboard = () => {
 
   const filteredTasksAssignedToMe = useMemo(() => {
     return tasksAssignedToMyDept.filter((task) => {
-      // No department filter here - only search
       const matchesSearch =
         task.title.toLowerCase().includes(search.toLowerCase()) ||
         task.description.toLowerCase().includes(search.toLowerCase());
@@ -1590,7 +1888,7 @@ const Dashboard = () => {
           <div className="p-6 space-y-6">
             <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
               <h3 className="text-xs font-bold text-gray-600 mb-2 uppercase">Description</h3>
-              <p className="text-gray-700">{task.description}</p>
+              <div className="text-gray-700 prose prose-sm max-w-none task-description-content" dangerouslySetInnerHTML={{ __html: task.description }} />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -1641,6 +1939,83 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-[#F5F5DC]">
+      <style>{`
+        /* Global styles for lists in editor and task display */
+        .ProseMirror ul,
+        .task-description-content ul {
+          list-style-type: disc !important;
+          padding-left: 1.5rem !important;
+          margin: 0.5rem 0 !important;
+        }
+        
+        .ProseMirror ol,
+        .task-description-content ol {
+          list-style-type: decimal !important;
+          padding-left: 1.5rem !important;
+          margin: 0.5rem 0 !important;
+        }
+        
+        .ProseMirror li,
+        .task-description-content li {
+          margin: 0.25rem 0 !important;
+          display: list-item !important;
+        }
+        
+        .ProseMirror ul li::marker,
+        .ProseMirror ol li::marker,
+        .task-description-content ul li::marker,
+        .task-description-content ol li::marker {
+          color: #1A237E !important;
+        }
+        
+        .ProseMirror ul ul {
+          list-style-type: circle !important;
+        }
+        
+        .ProseMirror ol ol {
+          list-style-type: lower-alpha !important;
+        }
+        
+        .ProseMirror {
+          outline: none;
+          min-height: 150px;
+        }
+        
+        .ProseMirror p {
+          margin: 0 0 8px 0;
+        }
+        
+        .ProseMirror img {
+          max-width: 100% !important;
+          max-height: 200px !important;
+          width: auto !important;
+          height: auto !important;
+          object-fit: contain !important;
+          margin: 10px 0 !important;
+          border-radius: 8px !important;
+          cursor: pointer !important;
+          border: 1px solid #e0e0e0 !important;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+        }
+        
+        .ProseMirror img:hover {
+          opacity: 0.9;
+          border-color: #1A237E;
+        }
+        
+        .ProseMirror strong {
+          font-weight: bold;
+        }
+        
+        .ProseMirror em {
+          font-style: italic;
+        }
+        
+        .ProseMirror-focused {
+          outline: none;
+        }
+      `}</style>
+
       {/* Government Style Navbar */}
       <nav className="sticky top-0 z-50 bg-[#1A237E] border-b-4 border-[#FF9933] shadow-lg">
         <div className="max-w-[1450px] mx-auto px-6 py-3 flex items-center flex-wrap justify-between">
@@ -1730,7 +2105,6 @@ const Dashboard = () => {
               </div>
               <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
                 {loadingDepartments ? (
-                  // Loading skeleton
                   Array(5).fill(0).map((_, idx) => (
                     <div key={idx} className="p-3 text-center animate-pulse">
                       <div className="w-8 h-8 mx-auto mb-2 bg-gray-200 rounded-full"></div>
@@ -1807,13 +2181,83 @@ const Dashboard = () => {
 
                 <div className="md:col-span-2">
                   <label className="text-gray-700 text-xs font-bold mb-1 block">DESCRIPTION</label>
-                  <textarea
-                    rows={3}
-                    value={taskForm.description}
-                    onChange={(e) => setTaskForm({ ...taskForm, description: e.target.value })}
-                    placeholder="Write task details..."
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-[#1A237E] focus:outline-none resize-none"
+                  
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleImageUpload}
+                    accept="image/*"
+                    className="hidden"
                   />
+
+                  <div className="flex flex-wrap gap-1 border border-gray-300 rounded-t-md p-2 bg-gray-50">
+                    <button
+                      type="button"
+                      onClick={toggleBold}
+                      className={`p-1.5 rounded hover:bg-gray-200 transition ${editor?.isActive('bold') ? 'bg-gray-300' : ''}`}
+                      title="Bold (Ctrl+B)"
+                    >
+                      <Bold size={16} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={toggleItalic}
+                      className={`p-1.5 rounded hover:bg-gray-200 transition ${editor?.isActive('italic') ? 'bg-gray-300' : ''}`}
+                      title="Italic (Ctrl+I)"
+                    >
+                      <Italic size={16} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={toggleStrike}
+                      className={`p-1.5 rounded hover:bg-gray-200 transition ${editor?.isActive('strike') ? 'bg-gray-300' : ''}`}
+                      title="Strikethrough"
+                    >
+                      <Type size={16} />
+                    </button>
+                    
+                    <div className="w-px h-6 bg-gray-300 mx-1"></div>
+                    
+                    <button
+                      type="button"
+                      onClick={toggleBulletList}
+                      className={`p-1.5 rounded hover:bg-gray-200 transition ${editor?.isActive('bulletList') ? 'bg-gray-300' : ''}`}
+                      title="Bullet List"
+                    >
+                      • List
+                    </button>
+                    <button
+                      type="button"
+                      onClick={toggleOrderedList}
+                      className={`p-1.5 rounded hover:bg-gray-200 transition ${editor?.isActive('orderedList') ? 'bg-gray-300' : ''}`}
+                      title="Numbered List"
+                    >
+                      1. List
+                    </button>
+                    
+                    <div className="w-px h-6 bg-gray-300 mx-1"></div>
+                    
+                    <button
+                      type="button"
+                      onClick={triggerFileInput}
+                      className="p-1.5 rounded hover:bg-gray-200 transition"
+                      title="Upload Image"
+                    >
+                      <ImageIcon size={16} />
+                    </button>
+                  </div>
+
+                  <div
+                    onDrop={handleImageDrop}
+                    onDragOver={(e) => e.preventDefault()}
+                    className="border border-gray-300 border-t-0 rounded-b-md p-3 min-h-[200px] cursor-text bg-white"
+                    onClick={() => editor?.commands.focus()}
+                  >
+                    <EditorContent editor={editor} />
+                  </div>
+                  <p className="text-xs text-gray-400 mt-1">
+                    💡 Tip: You can type text, drag & drop images, or click the image icon to upload
+                  </p>
                 </div>
               </div>
 
@@ -1822,8 +2266,8 @@ const Dashboard = () => {
                   onClick={handleAssignTask}
                   disabled={creatingTask}
                   className={`px-6 py-2 rounded-md text-white font-semibold transition ${creatingTask
-                      ? "bg-gray-400 cursor-not-allowed"
-                      : "bg-[#1A237E] hover:bg-[#283593]"
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-[#1A237E] hover:bg-[#04050c]"
                     }`}
                 >
                   {creatingTask ? "Creating Task..." : "+ Create Task"}
@@ -1919,7 +2363,6 @@ const Dashboard = () => {
                   <h3 className="text-[#1A237E] font-bold">📤 Tasks I've Assigned</h3>
                 </div>
 
-                {/* Dynamic height - max 340px */}
                 <div className="max-h-[340px] overflow-y-auto">
                   {loading ? (
                     <div className="text-center py-10">Loading...</div>
@@ -1928,7 +2371,7 @@ const Dashboard = () => {
                   ) : (
                     <div className="divide-y">
                       {filteredTasksIAssigned.map((task) => (
-                        <div key={task._id} onClick={() => handleTaskClick(task)} className={`p-3 hover:bg-gray-50 cursor-pointer   ${task.status === "completed" ? "bg-green-100 " : "bg-pink-100"} border border-gray-300`}>
+                        <div key={task._id} onClick={() => handleTaskClick(task)} className={`p-3 hover:bg-gray-50 cursor-pointer ${task.status === "completed" ? "bg-green-100" : "bg-pink-100"} border border-gray-300`}>
                           <div className="flex items-start gap-2">
                             {task.status === "completed" ? (
                               <div className="w-4 h-4 rounded-full bg-green-500 mt-0.5"></div>
@@ -1937,7 +2380,7 @@ const Dashboard = () => {
                             )}
                             <div className="flex-1">
                               <p className="text-sm font-semibold text-gray-800">{task.title}</p>
-                              <p className="text-xs text-gray-500 truncate">{task.description}</p>
+                              <div className="text-xs text-gray-500 truncate task-description-content" dangerouslySetInnerHTML={{ __html: task.description }} />
                               <div className="flex gap-3 mt-1 text-xs text-gray-500">
                                 <span>To: {task.assignedTo}</span>
                               </div>
@@ -1959,16 +2402,15 @@ const Dashboard = () => {
                   <h3 className="text-[#1A237E] font-bold">📥 Tasks Assigned to Me</h3>
                 </div>
 
-                {/* Dynamic height - max 340px, lekin kam tasks hain to auto height */}
                 <div className="max-h-[340px] overflow-y-auto">
                   {loading ? (
                     <div className="text-center py-10">Loading...</div>
                   ) : filteredTasksAssignedToMe.length === 0 ? (
                     <div className="text-center py-10 text-gray-500">No tasks assigned to you</div>
                   ) : (
-                    <div className="divide-y ">
+                    <div className="divide-y">
                       {filteredTasksAssignedToMe.map((task) => (
-                        <div key={task._id} onClick={() => handleTaskClick(task)} className={`p-3 hover:bg-gray-50 cursor-pointer   ${task.status === "completed" ? "bg-green-100 " : "bg-pink-100"} border border-gray-300`}>
+                        <div key={task._id} onClick={() => handleTaskClick(task)} className={`p-3 hover:bg-gray-50 cursor-pointer ${task.status === "completed" ? "bg-green-100" : "bg-pink-100"} border border-gray-300`}>
                           <div className="flex items-start gap-2">
                             {task.status === "completed" ? (
                               <div className="w-4 h-4 rounded-full bg-green-500 mt-0.5"></div>
@@ -1979,7 +2421,7 @@ const Dashboard = () => {
                               <p className={`text-sm font-semibold ${task.status === "completed" ? "text-gray-400 line-through" : "text-gray-800"}`}>
                                 {task.title}
                               </p>
-                              <p className="text-xs text-gray-500 truncate">{task.description}</p>
+                              <div className="text-xs text-gray-500 truncate task-description-content" dangerouslySetInnerHTML={{ __html: task.description }} />
                               <div className="flex gap-3 mt-1 text-xs text-gray-500">
                                 <span>From: {task.createdBy}</span>
                               </div>
@@ -1994,7 +2436,7 @@ const Dashboard = () => {
               </div>
             )}
 
-            {/* Selected Date Tasks - New Dynamic Section */}
+            {/* Selected Date Tasks */}
             {selectedDate && (
               <div className="bg-white rounded-lg border border-gray-300 overflow-hidden shadow-sm">
                 <div className="bg-[#E8EAF6] p-3 border-b border-gray-300 flex justify-between items-center">
@@ -2004,7 +2446,6 @@ const Dashboard = () => {
                   <button onClick={() => setSelectedDate(null)} className="text-gray-500 hover:text-gray-700">✕</button>
                 </div>
 
-                {/* Dynamic height - max 340px, kam tasks hain to auto height */}
                 <div className="max-h-[340px] overflow-y-auto">
                   {dateLoading ? (
                     <div className="text-center py-6">
@@ -2019,7 +2460,7 @@ const Dashboard = () => {
                         <div
                           key={task._id}
                           onClick={() => handleTaskClick(task)}
-                          className={`p-3 hover:bg-gray-50 cursor-pointer   ${task.status === "completed" ? "bg-green-100 " : "bg-pink-100"} border border-gray-300`}
+                          className={`p-3 hover:bg-gray-50 cursor-pointer ${task.status === "completed" ? "bg-green-100" : "bg-pink-100"} border border-gray-300`}
                         >
                           <div className="flex items-start gap-2">
                             {task.status === "completed" ? (
@@ -2033,7 +2474,7 @@ const Dashboard = () => {
                               </p>
                               <p className="text-xs text-gray-500">To: {task.assignedTo}</p>
                               <p className="text-xs text-gray-500">From: {task.createdBy}</p>
-                              <p className="text-xs text-gray-400 mt-1 line-clamp-2">{task.description || "No description"}</p>
+                              <div className="text-xs text-gray-400 mt-1 line-clamp-2 task-description-content" dangerouslySetInnerHTML={{ __html: task.description || "No description" }} />
                             </div>
                             <Eye className="w-4 h-4 text-gray-400 flex-shrink-0" />
                           </div>
@@ -2043,7 +2484,6 @@ const Dashboard = () => {
                   )}
                 </div>
 
-                {/* Optional: Show task count */}
                 {selectedDateTasks.length > 0 && (
                   <div className="px-3 py-2 border-t bg-gray-50 text-xs text-gray-500">
                     Total: {selectedDateTasks.length} task{selectedDateTasks.length !== 1 ? 's' : ''}

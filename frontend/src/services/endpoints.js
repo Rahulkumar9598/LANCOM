@@ -7,11 +7,13 @@ const ConstantApi = {
 
   },
   auth: {
-    login: BASE_URL + "/api/auth/login"
+    login: BASE_URL + "/api/auth/login",
+    forgotPassword:BASE_URL+"/api/auth/forgot-password"
 
 
   },
   task: {
+    uploadImage:BASE_URL+"/api/task/upload-image",
     createTask: BASE_URL + "/api/task/create-new-task",
     getTasksAssignedToMe: BASE_URL + "/api/task/get-tasks-assigned-to-me",
     getTasksCreatedByMe: BASE_URL + "/api/task/get-tasks-created-by-me",
