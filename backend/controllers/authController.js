@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken';
 import Department from '../models/Department.js';
 import bcrypt from 'bcryptjs';
-import { getOTPEmailTemplate, sendEmail } from '../utils/emailService.js';
 
 export const login = async (req, res) => {
   try {
@@ -92,63 +91,3 @@ export const getMe = async (req, res) => {
   }
 };
 
-export const forgotPassword = async (req, res) => {
-  try {
-    const { email } = req.body;
-
-    // Validate email
-    if (!email) {
-      return res.status(400).json({
-        success: false,
-        message: 'Email is required'
-      });
-    }
-
-    // Check if user exists in Department model
-    const user = await Department.findOne({ email: email.toLowerCase() });
-    
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: 'No account found with this email address'
-      });
-    }
-
-    // Generate OTP
-    const otp = generateOTP();
-    
-    // Store OTP
-    otpStore[email.toLowerCase()] = {
-      code: otp,
-      expiresAt: Date.now() + 10 * 60 * 1000, // 10 minutes
-      verified: false,
-      attempts: 0
-    };
-
-    // Get email template
-    const emailTemplate = getOTPEmailTemplate(otp, 10);
-    
-    // Send OTP email using your emailService
-    const emailSent = await sendEmail(email, 'Password Reset OTP', emailTemplate);
-
-    if (!emailSent.success) {
-      return res.status(500).json({
-        success: false,
-        message: 'Failed to send OTP email. Please try again later.'
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      message: 'OTP sent successfully to your email'
-    });
-
-  } catch (error) {
-    console.error('Forgot password error:', error);
-    return res.status(500).json({
-      success: false,
-      message: 'Internal server error',
-      error: error.message
-    });
-  }
-};
