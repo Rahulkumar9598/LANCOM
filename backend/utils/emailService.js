@@ -22,7 +22,7 @@ export const sendEmail = async (to, subject, htmlContent) => {
     const transporter = createTransporter();
     
     const mailOptions = {
-      from: `"Factory Manager" <${process.env.EMAIL_USER}>`,
+      from: `"Lancom" <${process.env.EMAIL_USER}>`,
       to: to,
       subject: subject,
       html: htmlContent
@@ -66,7 +66,7 @@ export const getOTPEmailTemplate = (otp, expiresInMinutes = 10) => {
           <p>If you didn't request this, please ignore this email.</p>
         </div>
         <div class="footer">
-          <p>&copy; 2024 Factory Manager. All rights reserved.</p>
+          <p>&copy; 2024 Lancom. All rights reserved.</p>
         </div>
       </div>
     </body>
@@ -100,7 +100,7 @@ export const getPasswordResetSuccessTemplate = () => {
           <p>You can now login with your new password.</p>
         </div>
         <div class="footer">
-          <p>&copy; 2024 Factory Manager. All rights reserved.</p>
+          <p>&copy; 2024 Lancom. All rights reserved.</p>
         </div>
       </div>
     </body>
