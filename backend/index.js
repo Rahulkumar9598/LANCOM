@@ -37,7 +37,6 @@
 //    console.log(`Uploads folder: ${path.join(__dirname, "uploads")}`);
 // });
 
-
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -54,14 +53,18 @@ const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
-// ✅ CRITICAL: Body parser middleware (MUST be before routes)
+// ✅ Body parser middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// CORS
-app.options("*", cors());
+// ✅ CORS - Fixed (remove app.options line)
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
-// Debug middleware (optional - to see what's coming in)
+// Debug middleware
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);
   if (req.body && Object.keys(req.body).length > 0) {
@@ -74,7 +77,7 @@ app.use((req, res, next) => {
 const uploadDir = path.join(__dirname, "uploads");
 app.use("/uploads", express.static(uploadDir));
 
-// Routes - Order matters
+// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/task", taskRoutes);
 app.use("/api/admin", adminRoutes);
@@ -84,7 +87,7 @@ app.get("/", (req, res) => {
   res.json({ message: "Backend is running...", status: "ok" });
 });
 
-// 404 handler for undefined routes
+// 404 handler
 app.use((req, res) => {
   res.status(404).json({ 
     success: false, 

@@ -5,6 +5,47 @@ import path from "path";
 
 /* IMAGE UPLOAD */
 
+// export const uploadImage = async (req, res) => {
+//   try {
+//     console.log("Upload request received");
+//     console.log("File:", req.file);
+    
+//     if (!req.file) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "No image uploaded"
+//       });
+      
+//     }
+
+//     // ✅ Check if file exists
+//     const filePath = path.join(process.cwd(), 'uploads', req.file.filename);
+//     if (!fs.existsSync(filePath)) {
+//       return res.status(500).json({
+//         success: false,
+//         message: "File was not saved properly"
+//       });
+//     }
+
+//     const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+
+//     return res.status(200).json({
+//       success: true,
+//       url: imageUrl,
+//       filename: req.file.filename
+//     });
+
+//   } catch (error) {
+//     console.error("Upload error:", error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Image upload failed",
+//       error: error.message
+//     });
+//   }
+// };
+
+
 export const uploadImage = async (req, res) => {
   try {
     console.log("Upload request received");
@@ -15,24 +56,17 @@ export const uploadImage = async (req, res) => {
         success: false,
         message: "No image uploaded"
       });
-      
     }
 
-    // ✅ Check if file exists
-    const filePath = path.join(process.cwd(), 'uploads', req.file.filename);
-    if (!fs.existsSync(filePath)) {
-      return res.status(500).json({
-        success: false,
-        message: "File was not saved properly"
-      });
-    }
-
-    const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+    // Cloudinary returns the URL in req.file.path or req.file.secure_url
+    const imageUrl = req.file.path || req.file.secure_url;
+    
+    console.log("Image uploaded to Cloudinary:", imageUrl);
 
     return res.status(200).json({
       success: true,
       url: imageUrl,
-      filename: req.file.filename
+      filename: req.file.filename || req.file.public_id
     });
 
   } catch (error) {
