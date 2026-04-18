@@ -8,7 +8,9 @@ const ConstantApi = {
   },
   auth: {
     login: BASE_URL + "/api/auth/login",
-    // forgotPassword:BASE_URL+"/api/auth/forgot-password"
+    forgotPassword:BASE_URL+"/api/auth/forgot-password",
+    verifyOtp:BASE_URL+"/api/auth/verify-otp",
+    resetPassword:BASE_URL+"/api/auth/reset-password"
 
 
   },
@@ -19,7 +21,7 @@ const ConstantApi = {
     getTasksCreatedByMe: BASE_URL + "/api/task/get-tasks-created-by-me",
     getTasksByDate: BASE_URL + "/api/task/by-date",
     markCompleteTask: BASE_URL + "/api/task/mark-complete-task",
-    getAllDepartment:BASE_URL+"/api/task/get-all-department"
+    getAllDepartment:BASE_URL+"/api/task/get-all-department",
 
   }
 
