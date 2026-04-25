@@ -470,7 +470,7 @@
 //       toast.error("Please select a department first!");
 //       return;
 //     }
-    
+
 //         console.log("3. Checking title:", taskForm.title);
 //     if (!taskForm.title.trim()) {
 //       toast.error("Please enter task title!");
@@ -612,7 +612,7 @@
 //     setTaskForm({ ...taskForm, assignedTo: deptName });
 //   };
 
-  
+
 
 //   const TaskDetailsModal = ({ task, onClose, onToggleStatus }) => {
 //     if (!task) return null;
@@ -850,7 +850,7 @@
 
 //                 <div className="md:col-span-2">
 //                   <label className="text-gray-700 text-xs font-bold mb-1 block">DESCRIPTION</label>
-                  
+
 //                   {/* Hidden file input */}
 //                   <input
 //                     type="file"
@@ -886,9 +886,9 @@
 //                     >
 //                       <Type size={16} />
 //                     </button>
-                    
+
 //                     <div className="w-px h-6 bg-gray-300 mx-1"></div>
-                    
+
 //                     <button
 //                       type="button"
 //                       onClick={toggleBulletList}
@@ -905,9 +905,9 @@
 //                     >
 //                       1. List
 //                     </button>
-                    
+
 //                     <div className="w-px h-6 bg-gray-300 mx-1"></div>
-                    
+
 //                     <button
 //                       type="button"
 //                       onClick={triggerFileInput}
@@ -1206,7 +1206,7 @@
 //   .ProseMirror p {
 //     margin: 0 0 8px 0;
 //   }
-  
+
 //   /* Image size control */
 //   .ProseMirror img {
 //     max-width: 100% !important;
@@ -1220,7 +1220,7 @@
 //     border: 1px solid #e0e0e0 !important;
 //     box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
 //   }
-  
+
 //   .ProseMirror img:hover {
 //     opacity: 0.9;
 //     border-color: #1A237E;
@@ -1232,43 +1232,43 @@
 //     padding-left: 1.5rem !important;
 //     margin: 0.5rem 0 !important;
 //   }
-  
+
 //   .ProseMirror ul {
 //     list-style-type: disc !important;
 //   }
-  
+
 //   .ProseMirror ol {
 //     list-style-type: decimal !important;
 //   }
-  
+
 //   .ProseMirror li {
 //     margin: 0.25rem 0 !important;
 //     display: list-item !important;
 //   }
-  
+
 //   /* Make sure list items have proper markers */
 //   .ProseMirror ul li::marker,
 //   .ProseMirror ol li::marker {
 //     color: #1A237E !important;
 //   }
-  
+
 //   /* For nested lists */
 //   .ProseMirror ul ul {
 //     list-style-type: circle !important;
 //   }
-  
+
 //   .ProseMirror ol ol {
 //     list-style-type: lower-alpha !important;
 //   }
-  
+
 //   .ProseMirror strong {
 //     font-weight: bold;
 //   }
-  
+
 //   .ProseMirror em {
 //     font-style: italic;
 //   }
-  
+
 //   .ProseMirror-focused {
 //     outline: none;
 //   }
@@ -1730,7 +1730,7 @@ const Dashboard = () => {
       toast.error("Please select a department first!");
       return;
     }
-    
+
     console.log("3. Checking title:", taskForm.title);
     if (!taskForm.title.trim()) {
       toast.error("Please enter task title!");
@@ -1768,10 +1768,10 @@ const Dashboard = () => {
           description: "",
           assignedTo: "",
         });
-        
 
-         setSelectedDept("");
-         
+
+        setSelectedDept("");
+
         if (editor) {
           editor.commands.setContent("<p></p>");
         }
@@ -2025,7 +2025,7 @@ const Dashboard = () => {
               <span className="text-[#1A237E] font-bold text-xl">◎</span>
             </div>
             <div>
-              <h1 className="text-white font-bold text:lg sm:text-xl tracking-wide">LANCOM</h1>
+              <h1 className="text-white font-bold text:lg sm:text-xl tracking-wide">HONTO'S LANCOM</h1>
               <p className="text-[#FFE0B2] text-xs">Welcome Back {(department?.department?.headName)?.toUpperCase()}</p>
             </div>
           </div>
@@ -2182,7 +2182,7 @@ const Dashboard = () => {
 
                 <div className="md:col-span-2">
                   <label className="text-gray-700 text-xs font-bold mb-1 block">DESCRIPTION</label>
-                  
+
                   <input
                     type="file"
                     ref={fileInputRef}
@@ -2216,9 +2216,9 @@ const Dashboard = () => {
                     >
                       <Type size={16} />
                     </button>
-                    
+
                     <div className="w-px h-6 bg-gray-300 mx-1"></div>
-                    
+
                     <button
                       type="button"
                       onClick={toggleBulletList}
@@ -2235,9 +2235,9 @@ const Dashboard = () => {
                     >
                       1. List
                     </button>
-                    
+
                     <div className="w-px h-6 bg-gray-300 mx-1"></div>
-                    
+
                     <button
                       type="button"
                       onClick={triggerFileInput}
