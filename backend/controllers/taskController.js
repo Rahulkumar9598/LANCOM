@@ -1,5 +1,6 @@
 import Task from '../models/Task.js';
 import Department from '../models/Department.js';
+import { getIO } from '../utils/socket.js';
 import fs from "fs";
 import path from "path";
 
@@ -177,6 +178,13 @@ export const createTask = async (req, res) => {
     const populatedTask = await Task.findById(savedTask._id)
       .populate('createdBy', 'department email phone headName')
       .populate('assignedTo', 'department email phone headName');
+
+    try {
+      const io = getIO();
+      io.emit('taskCreated', populatedTask);
+    } catch (error) {
+      console.warn('Socket.io not initialized, taskCreated not emitted:', error.message);
+    }
 
     return res.status(201).json({
       success: true,

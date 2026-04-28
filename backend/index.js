@@ -43,6 +43,7 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import connectDB from "./config/database.js";
+import { initSocket } from "./utils/socket.js";
 import authRoutes from "./routes/authRoutes.js";
 import taskRoutes from "./routes/tasks.js";
 import adminRoutes from "./routes/adminRoutes.js";
@@ -109,7 +110,10 @@ app.use((err, req, res, next) => {
 connectDB();
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📁 Uploads folder: ${uploadDir}`);
 });
+
+const io = initSocket(server);
+app.set('io', io);
