@@ -2,8 +2,10 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
 import Login from "../pages/Login";
 import Dashboard from "../component/Dashboard/Dashboard";
-import Register from "../pages/Register";
+import AdminProfile from "../pages/AdminProfile";
+import ServiceExpired from "../pages/ServiceExpired";
 import PrivateRoute from "../component/comman/PrivateRoute";
+import Register from "../pages/Register";
 
 export const routes = createBrowserRouter([
   {
@@ -27,6 +29,18 @@ export const routes = createBrowserRouter([
         element: (
           <PrivateRoute adminOnly={true}>
             <Register />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/service-expired",
+        element: <ServiceExpired />
+      },
+      {
+        path: "/admin/profile",
+        element: (
+          <PrivateRoute adminOnly={true}>
+            <AdminProfile />
           </PrivateRoute>
         ),
       },

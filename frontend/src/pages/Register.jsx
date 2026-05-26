@@ -526,6 +526,15 @@ const Register = () => {
         <DynamicIcon name="ArrowLeft" className="w-4 h-4" />
       </button>
 
+      {/* Admin Profile Button */}
+      <button
+        onClick={() => navigate('/admin/profile')}
+        className="fixed bottom-4 right-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-full px-4 py-2 hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-lg"
+        aria-label="Admin Profile"
+      >
+        Admin Profile
+      </button>
+
       <style jsx>{`
         @keyframes fadeInDown {
           from {

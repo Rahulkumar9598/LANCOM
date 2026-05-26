@@ -720,17 +720,6 @@
 //                     <p className="text-sm font-bold text-gray-800">{department?.department?.email || "user@example.com"}</p>
 //                   </div>
 //                   <div className="py-2">
-//                     {department?.department.role === "admin" ? <button
-//                       onClick={() => {
-//                         setIsDropdownOpen(false);
-//                         navigate('/admin/register');
-//                       }}
-//                       className="w-full flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50"
-//                     >
-//                       <Building2 size={18} />
-//                       <span className="text-sm">Register Department</span>
-//                       <div className="border-t my-1"></div>
-//                     </button>
 
 //                       : ""}
 
@@ -2083,41 +2072,42 @@ const Dashboard = () => {
               </button>
 
               {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-xl border border-gray-200 z-50">
-                  <div className="p-3 border-b bg-gray-50">
-                    <p className="text-xs text-gray-500">Signed in as</p>
-                    <p className="text-sm font-bold text-gray-800">{department?.department?.email || "user@example.com"}</p>
-                  </div>
-                  <div className="py-2">
-                    {department?.department.role === "admin" ? <button
-                      onClick={() => {
-                        setIsDropdownOpen(false);
-                        navigate('/admin/register');
-                      }}
-                      className="w-full flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50"
-                    >
-                      <Building2 size={18} />
-                      <span className="text-sm">Register Department</span>
-                      <div className="border-t my-1"></div>
-                    </button>
-
-                      : ""}
-
-
-                    <button
-                      onClick={() => {
-                        setIsDropdownOpen(false);
-                        dispatch(logout());
-                        navigate('/');
-                      }}
-                      className="w-full flex items-center gap-3 px-4 py-2 text-red-600 hover:bg-red-50"
-                    >
-                      <LogOut size={18} />
-                      <span className="text-sm">Logout</span>
-                    </button>
-                  </div>
-                </div>
-              )}
+  <div className="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-xl border border-gray-200 z-50">
+    <div className="p-3 border-b bg-gray-50">
+      <p className="text-xs text-gray-500">Signed in as</p>
+      <p className="text-sm font-bold text-gray-800">{department?.department?.email || "user@example.com"}</p>
+    </div>
+    <div className="py-2">
+      {department?.department.role === "admin" ? (
+        <>
+          <button
+            onClick={() => { setIsDropdownOpen(false); navigate('/admin/profile'); }}
+            className="w-full flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50"
+          >
+            <Building2 size={18} />
+            <span className="text-sm">Admin Profile</span>
+            <div className="border-t my-1"></div>
+          </button>
+          <button
+            onClick={() => { setIsDropdownOpen(false); navigate('/admin/register'); }}
+            className="w-full flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50"
+          >
+            <Building2 size={18} />
+            <span className="text-sm">Register Department</span>
+            <div className="border-t my-1"></div>
+          </button>
+        </>
+      ) : null}
+    </div>
+    <button
+      onClick={() => { setIsDropdownOpen(false); dispatch(logout()); navigate('/'); }}
+      className="w-full flex items-center gap-3 px-4 py-2 text-red-600 hover:bg-red-50"
+    >
+      <LogOut size={18} />
+      <span className="text-sm">Logout</span>
+    </button>
+  </div>
+)}
             </div>
           </div>
         </div>
