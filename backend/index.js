@@ -90,19 +90,19 @@ app.get("/", (req, res) => {
 
 // 404 handler
 app.use((req, res) => {
-  res.status(404).json({ 
-    success: false, 
-    message: `Route ${req.method} ${req.url} not found` 
+  res.status(404).json({
+    success: false,
+    message: `Route ${req.method} ${req.url} not found`
   });
 });
 
 // Error handler
 app.use((err, req, res, next) => {
   console.error('Error:', err);
-  res.status(500).json({ 
-    success: false, 
+  res.status(500).json({
+    success: false,
     message: 'Internal server error',
-    error: err.message 
+    error: err.message
   });
 });
 

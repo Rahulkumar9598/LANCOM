@@ -15,6 +15,10 @@ export const protect = async (req, res, next) => {
       if (!req.department) {
         return res.status(401).json({ message: 'Department not found' });
       }
+      // Check service expiration
+      if (req.department.serviceExpiresAt && new Date(req.department.serviceExpiresAt) < new Date()) {
+        return res.status(403).json({ message: 'Service expired. Please purchase subscription.' });
+      }
       
       next();
     } catch (error) {

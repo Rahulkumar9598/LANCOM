@@ -48,6 +48,14 @@ const departmentSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  serviceExpiresAt: {
+    type: Date,
+    default: null
+  },
+  serviceDurationMonths: {
+    type: Number,
+    default: null
   }
 }, {
   timestamps: true
