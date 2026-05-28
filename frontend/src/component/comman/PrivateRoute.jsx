@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 
-const PrivateRoute = ({ children, adminOnly = false }) => {
+const PrivateRoute = ({ children, adminOnly = false, superAdminOnly = false }) => {
   const token = localStorage.getItem('token');
   const department = JSON.parse(localStorage.getItem('department') || '{}');
   const navigate = useNavigate();
@@ -23,6 +23,9 @@ const PrivateRoute = ({ children, adminOnly = false }) => {
   }
   
   if (adminOnly && department.role !== 'admin') {
+    return <Navigate to="/dashboard" />;
+  }
+  if (superAdminOnly && department.role !== 'superadmin') {
     return <Navigate to="/dashboard" />;
   }
   

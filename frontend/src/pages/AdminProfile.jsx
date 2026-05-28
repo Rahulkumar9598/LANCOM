@@ -126,6 +126,8 @@ const AdminProfile = () => {
               <thead>
                 <tr className="bg-[#1A237E] text-white">
                   <th className="px-4 py-2 text-left">Department</th>
+                  <th className="px-4 py-2 text-left">Email</th>
+                  <th className="px-4 py-2 text-left">Phone</th>
                   <th className="px-4 py-2 text-left">Role</th>
                   <th className="px-4 py-2 text-left">Service Expiration</th>
                   <th className="px-4 py-2 text-left">Actions</th>
@@ -137,6 +139,8 @@ const AdminProfile = () => {
                 {filteredDepartments.map((dept) => (
                   <tr key={dept._id} className="border-b">
                     <td className="px-4 py-2">{dept.department}</td>
+                    <td className="px-4 py-2">{dept.email}</td>
+                    <td className="px-4 py-2">{dept.phone}</td>
                     <td className="px-4 py-2">{dept.role}</td>
                     <td className="px-4 py-2">
                       {dept.serviceExpiresAt ? (

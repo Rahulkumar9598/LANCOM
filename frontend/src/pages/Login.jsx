@@ -223,7 +223,7 @@
 //   const [toastMessage, setToastMessage] = useState(null);
 //   const [toastType, setToastType] = useState('success');
 //   const dispatch = useDispatch() 
-  
+
 //   const navigate = useNavigate();
 
 //   // Simple toast notification
@@ -249,19 +249,19 @@
 //   // Validate form
 //   const validateForm = () => {
 //     const errors = {};
-    
+
 //     if (!email) {
 //       errors.email = 'Email is required';
 //     } else if (!LoginConfig.validation.emailPattern.test(email)) {
 //       errors.email = 'Please enter a valid email address';
 //     }
-    
+
 //     if (!password) {
 //       errors.password = 'Password is required';
 //     } else if (password.length < LoginConfig.validation.minPasswordLength) {
 //       errors.password = `Password must be at least ${LoginConfig.validation.minPasswordLength} characters`;
 //     }
-    
+
 //     setFormErrors(errors);
 //     return Object.keys(errors).length === 0;
 //   };
@@ -269,20 +269,20 @@
 
 //   const handleSubmit = async (e) => {
 //     e.preventDefault();
-    
+
 //     const trimmedEmail = email.trim();
 //     const trimmedPassword = password.trim();
-    
+
 //     if (!validateForm()) {
 //       return;
 //     }
-    
+
 //     try {
 //       setLoading(true);
-      
+
 //       console.log(trimmedEmail, trimmedPassword)
-      
-      
+
+
 //       const res = await API.post(ConstantApi.auth.login, { email: trimmedEmail, password: trimmedPassword })
 
 //       console.log("login response" , res)
@@ -298,13 +298,13 @@
 //           localStorage.removeItem('rememberedEmail');
 //           localStorage.removeItem('rememberedPassword');
 //         }
-        
+
 //         // Store authentication data
 //         localStorage.setItem('token', res.data.token);
 //         localStorage.setItem('department', JSON.stringify(res.data.department));
-        
+
 //         showToast(LoginConfig.messages.loginSuccess, 'success');
-        
+
 //         // Redirect after short delay
 //         setTimeout(() => {
 //           navigate('/dashboard');
@@ -349,7 +349,7 @@
 
 //       <div className="relative min-h-screen flex items-center justify-center p-4">
 //         <div className="max-w-6xl w-full grid md:grid-cols-2 gap-8 items-center">
-          
+
 //           {/* Left Side - Branding */}
 //           <div className="hidden md:block text-white space-y-6">
 //             <div className="flex items-center gap-3 mb-8">
@@ -731,7 +731,7 @@ const LoginConfig = {
 
 // Helper function to get icon component
 const getIcon = (iconName) => {
-  switch(iconName) {
+  switch (iconName) {
     case 'Mail': return Icons.Mail;
     case 'Lock': return Icons.Lock;
     case 'UserCheck': return Icons.UserCheck;
@@ -791,38 +791,38 @@ const Login = () => {
   // Validate form
   const validateForm = () => {
     const errors = {};
-    
+
     if (!email) {
       errors.email = 'Email is required';
     } else if (!LoginConfig.validation.emailPattern.test(email)) {
       errors.email = 'Please enter a valid email address';
     }
-    
+
     if (!password) {
       errors.password = 'Password is required';
     } else if (password.length < LoginConfig.validation.minPasswordLength) {
       errors.password = `Password must be at least ${LoginConfig.validation.minPasswordLength} characters`;
     }
-    
+
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const trimmedEmail = email.trim();
     const trimmedPassword = password.trim();
-    
+
     if (!validateForm()) {
       return;
     }
-    
+
     try {
       setLoading(true);
-      
+
       console.log(trimmedEmail, trimmedPassword);
-      
+
       const res = await API.post(ConstantApi.auth.login, { email: trimmedEmail, password: trimmedPassword });
 
       console.log("login response", res);
@@ -837,12 +837,12 @@ const Login = () => {
           localStorage.removeItem('rememberedEmail');
           localStorage.removeItem('rememberedPassword');
         }
-        
+
         localStorage.setItem('token', res.data.token);
         localStorage.setItem('department', JSON.stringify(res.data.department));
-        
+
         showToast(LoginConfig.messages.loginSuccess, 'success');
-        
+
         setTimeout(() => {
           navigate('/dashboard');
         }, 500);
@@ -858,7 +858,7 @@ const Login = () => {
   };
 
   // ==================== FORGET PASSWORD FUNCTIONS ====================
-  
+
   const handleSendOtp = async () => {
     if (!forgotEmail) {
       showToast('Please enter your email', 'error');
@@ -868,8 +868,8 @@ const Login = () => {
     try {
       setForgotLoading(true);
       const res = await API.post(ConstantApi.auth.forgotPassword, { email: forgotEmail });
-      console.log(res , " this is response of handleSendOtp")      
-      
+      console.log(res, " this is response of handleSendOtp")
+
       if (res.data.success) {
         setForgotStep(2);
         showToast('OTP sent to your email!', 'success');
@@ -877,7 +877,7 @@ const Login = () => {
         showToast(res.data.message || 'Failed to send OTP', 'error');
       }
     } catch (error) {
-      console.error(error?.response , "error from handleSendOtp");
+      console.error(error?.response, "error from handleSendOtp");
       showToast(error.response?.data?.message || 'Error sending OTP', 'error');
     } finally {
       setForgotLoading(false);
@@ -892,12 +892,12 @@ const Login = () => {
 
     try {
       setForgotLoading(true);
-      const res = await API.post(ConstantApi.auth.verifyOtp, { 
-        email: forgotEmail, 
-        otp: otp 
+      const res = await API.post(ConstantApi.auth.verifyOtp, {
+        email: forgotEmail,
+        otp: otp
       });
-      console.log(res , " this is response of handleVerifyOtp")
-      
+      console.log(res, " this is response of handleVerifyOtp")
+
       if (res.data.success) {
         setForgotStep(3);
         showToast('OTP verified! Set new password', 'success');
@@ -931,7 +931,7 @@ const Login = () => {
         newPassword: newPassword,
         confirmPassword: confirmPassword
       });
-      
+
       if (res.data.success) {
         showToast('Password reset successfully! Please login', 'success');
         closeForgotModal();
@@ -967,9 +967,8 @@ const Login = () => {
       {/* Toast Notification */}
       {toastMessage && (
         <div className="fixed top-4 right-4 z-50 animate-fade-in-down">
-          <div className={`${
-            toastType === 'success' ? 'bg-green-500' : 'bg-red-500'
-          } text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2`}>
+          <div className={`${toastType === 'success' ? 'bg-green-500' : 'bg-red-500'
+            } text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2`}>
             {toastType === 'success' ? '✅' : '❌'}
             <span>{toastMessage}</span>
           </div>
@@ -985,7 +984,7 @@ const Login = () => {
 
       <div className="relative min-h-screen flex items-center justify-center p-4">
         <div className="max-w-6xl w-full grid md:grid-cols-2 gap-8 items-center">
-          
+
           {/* Left Side - Branding */}
           <div className="hidden md:block text-white space-y-6">
             <div className="flex items-center gap-3 mb-8">

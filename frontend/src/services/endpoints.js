@@ -1,10 +1,11 @@
 
+
 const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 const ConstantApi = {
   admin: {
-    registerDeparment: BASE_URL + "/api/admin/register-department",
-
+    registerDeparment: `${BASE_URL}/api/admin/register-department`,
+    getAllAdmins: `${BASE_URL}/api/admin/admins`,
   },
   auth: {
     login: BASE_URL + "/api/auth/login",
