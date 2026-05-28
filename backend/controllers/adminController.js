@@ -76,3 +76,39 @@ export const setServiceAccess = async (req, res) => {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
 };
+
+// Get all admin users (role: 'admin')
+export const getAllAdmins = async (req, res) => {
+  try {
+    const admins = await Department.find({ role: 'admin' })
+      .select('-password')
+      .sort({ department: 1 });
+    res.json({ success: true, admins });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};
+
+// Update admin status (active/inactive)
+export const updateAdminStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body; // expected 'active' or 'inactive'
+    if (!['active', 'inactive'].includes(status)) {
+      return res.status(400).json({ success: false, message: 'Invalid status value' });
+    }
+    const updated = await Department.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true, runValidators: true, select: '-password' }
+    );
+    if (!updated) {
+      return res.status(404).json({ success: false, message: 'Admin not found' });
+    }
+    res.json({ success: true, message: 'Admin status updated', admin: updated });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};

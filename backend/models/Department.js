@@ -42,7 +42,7 @@ const departmentSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['admin', 'department'],
+    enum: ['admin', 'department', 'superadmin'],
     default: 'department'
   },
   createdAt: {

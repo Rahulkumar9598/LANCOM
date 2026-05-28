@@ -6,7 +6,7 @@ import { getOTPEmailTemplate, getPasswordResetSuccessTemplate, sendEmail } from 
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log( req.body ," request body of login")
+    console.log(req.body, " request body of login")
 
     // Find department by email (lowercase as per schema)
     const department = await Department.findOne({ email: email.toLowerCase() });
@@ -14,11 +14,11 @@ export const login = async (req, res) => {
     if (department.serviceExpiresAt && new Date(department.serviceExpiresAt) < new Date()) {
       return res.status(403).json({ success: false, message: 'Service expired. Please purchase subscription.' });
     }
-    
+
     if (!department) {
-      return res.status(401).json({ 
+      return res.status(401).json({
         success: false,
-        message: 'Invalid email or password' 
+        message: 'Invalid email or password'
       });
     }
 
@@ -28,29 +28,29 @@ export const login = async (req, res) => {
       if (department.serviceExpiresAt && new Date(department.serviceExpiresAt) < new Date()) {
         return res.status(403).json({ success: false, message: 'Service expired. Please purchase subscription.' });
       }
-      return res.status(401).json({ 
+      return res.status(401).json({
         success: false,
-        message: 'Account is inactive. Please contact admin.' 
+        message: 'Account is inactive. Please contact admin.'
       });
     }
 
     // Compare password
     const isPasswordMatch = await bcrypt.compare(password, department.password);
-    
+
     if (!isPasswordMatch) {
-      return res.status(401).json({ 
+      return res.status(401).json({
         success: false,
-        message: 'Invalid email or password' 
+        message: 'Invalid email or password'
       });
     }
 
     // ✅ Generate JWT Token
     const token = jwt.sign(
-      { 
+      {
         id: department._id,
         department: department.department,
         email: department.email,
-        role: department.role 
+        role: department.role
       },
       process.env.JWT_SECRET || 'your_secret_key_here',
       { expiresIn: '7d' }  // Token expires in 7 days
@@ -74,9 +74,9 @@ export const login = async (req, res) => {
     });
   } catch (error) {
     console.error('Login error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
-      message: 'Server error. Please try again later.' 
+      message: 'Server error. Please try again later.'
     });
   }
 };
@@ -121,9 +121,9 @@ export const forgotPassword = async (req, res) => {
         message: 'Email is required'
       });
     }
-    
+
     const user = await Department.findOne({ email: email.toLowerCase() });
-    
+
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -132,7 +132,7 @@ export const forgotPassword = async (req, res) => {
     }
 
     const otp = generateOTP();
-    
+
     otpStore.set(email.toLowerCase(), {
       otp: otp,
       expiresAt: Date.now() + 10 * 60 * 1000,
@@ -140,8 +140,8 @@ export const forgotPassword = async (req, res) => {
       attempts: 0
     });
 
-    console.log(otp , " this is my controller")
-    
+    console.log(otp, " this is my controller")
+
     const emailTemplate = getOTPEmailTemplate(otp, 10);
     const emailSent = await sendEmail(email, 'Password Reset OTP', emailTemplate);
 
@@ -287,7 +287,7 @@ export const resetPassword = async (req, res) => {
     }
 
     const user = await Department.findOne({ email: email.toLowerCase() });
-    
+
     if (!user) {
       return res.status(404).json({
         success: false,
