@@ -1,0 +1,14 @@
+
+Role	Email	Department
+superadmin	superadmin@gmail.com	SUPERADMIN
+admin	rahulcodes222@gmail.com	ADMIN
+department	test1@gmail.com	IT
+department	soni@gmail.com	DESIGN
+department	pritam@gmail.com	QC
+department	rohit@gmail.com	SALES
+department	aman@gmail.com	STORE
+
+
+password123
+
+123456

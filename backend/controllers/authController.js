@@ -10,16 +10,17 @@ export const login = async (req, res) => {
 
     // Find department by email (lowercase as per schema)
     const department = await Department.findOne({ email: email.toLowerCase() });
-    // Block login if service subscription has expired
-    if (department.serviceExpiresAt && new Date(department.serviceExpiresAt) < new Date()) {
-      return res.status(403).json({ success: false, message: 'Service expired. Please purchase subscription.' });
-    }
 
     if (!department) {
       return res.status(401).json({
         success: false,
         message: 'Invalid email or password'
       });
+    }
+
+    // Block login if service subscription has expired
+    if (department.serviceExpiresAt && new Date(department.serviceExpiresAt) < new Date()) {
+      return res.status(403).json({ success: false, message: 'Service expired. Please purchase subscription.' });
     }
 
     // Check if department is active
