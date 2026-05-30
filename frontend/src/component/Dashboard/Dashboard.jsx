@@ -1576,6 +1576,7 @@ const Dashboard = () => {
 
   const handleDateClick = async (date) => {
     setSelectedDate(date);
+    setToggleView(2);
     await fetchTasksByDate(date);
   };
 
@@ -2076,52 +2077,52 @@ const Dashboard = () => {
               </button>
 
               {isDropdownOpen && (
-  <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-gray-100 z-50 overflow-hidden">
-    {/* User info header */}
-    <div className="px-4 py-3 bg-[#1A237E]">
-      <div className="flex items-center gap-2.5">
-        <div className="w-8 h-8 rounded-full bg-[#FF9933] flex items-center justify-center text-[#1A237E] text-sm font-bold flex-shrink-0">
-          {department?.department?.headName?.toUpperCase()?.charAt(0) || "U"}
-        </div>
-        <div className="min-w-0">
-          <p className="text-white text-xs font-semibold truncate">{(department?.department?.headName || "")?.toUpperCase()}</p>
-          <p className="text-white/50 text-[10px] truncate">{department?.department?.email || ""}</p>
-        </div>
-      </div>
-    </div>
+                <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-gray-100 z-50 overflow-hidden">
+                  {/* User info header */}
+                  <div className="px-4 py-3 bg-[#1A237E]">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-full bg-[#FF9933] flex items-center justify-center text-[#1A237E] text-sm font-bold flex-shrink-0">
+                        {department?.department?.headName?.toUpperCase()?.charAt(0) || "U"}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-white text-xs font-semibold truncate">{(department?.department?.headName || "")?.toUpperCase()}</p>
+                        <p className="text-white/50 text-[10px] truncate">{department?.department?.email || ""}</p>
+                      </div>
+                    </div>
+                  </div>
 
-    {/* Menu items */}
-    {department?.department?.role === "admin" && (
-      <div className="py-1.5 border-b border-gray-100">
-        <button
-          onClick={() => { setIsDropdownOpen(false); navigate('/admin/profile'); }}
-          className="w-full flex items-center gap-2.5 px-4 py-2 text-gray-600 hover:bg-indigo-50 hover:text-[#1A237E] transition text-xs"
-        >
-          <Building2 size={13} className="text-gray-400" />
-          Admin Profile
-        </button>
-        <button
-          onClick={() => { setIsDropdownOpen(false); navigate('/admin/register'); }}
-          className="w-full flex items-center gap-2.5 px-4 py-2 text-gray-600 hover:bg-indigo-50 hover:text-[#1A237E] transition text-xs"
-        >
-          <Plus size={13} className="text-gray-400" />
-          Register Department
-        </button>
-      </div>
-    )}
+                  {/* Menu items */}
+                  {department?.department?.role === "admin" && (
+                    <div className="py-1.5 border-b border-gray-100">
+                      <button
+                        onClick={() => { setIsDropdownOpen(false); navigate('/admin/profile'); }}
+                        className="w-full flex items-center gap-2.5 px-4 py-2 text-gray-600 hover:bg-indigo-50 hover:text-[#1A237E] transition text-xs"
+                      >
+                        <Building2 size={13} className="text-gray-400" />
+                        Admin Profile
+                      </button>
+                      <button
+                        onClick={() => { setIsDropdownOpen(false); navigate('/admin/register'); }}
+                        className="w-full flex items-center gap-2.5 px-4 py-2 text-gray-600 hover:bg-indigo-50 hover:text-[#1A237E] transition text-xs"
+                      >
+                        <Plus size={13} className="text-gray-400" />
+                        Register Department
+                      </button>
+                    </div>
+                  )}
 
-    {/* Logout */}
-    <div className="py-1.5">
-      <button
-        onClick={() => { setIsDropdownOpen(false); dispatch(logout()); navigate('/'); }}
-        className="w-full flex items-center gap-2.5 px-4 py-2 text-red-500 hover:bg-red-50 transition text-xs"
-      >
-        <LogOut size={13} />
-        Sign out
-      </button>
-    </div>
-  </div>
-)}
+                  {/* Logout */}
+                  <div className="py-1.5">
+                    <button
+                      onClick={() => { setIsDropdownOpen(false); dispatch(logout()); navigate('/'); }}
+                      className="w-full flex items-center gap-2.5 px-4 py-2 text-red-500 hover:bg-red-50 transition text-xs"
+                    >
+                      <LogOut size={13} />
+                      Sign out
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -2129,318 +2130,339 @@ const Dashboard = () => {
 
       <main className="flex-1 overflow-hidden w-full">
         <div className="max-w-[1450px] mx-auto px-4 py-3 h-full">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 h-full">
-          {/* LEFT COLUMN */}
-          <div className="lg:col-span-8 space-y-3 overflow-y-auto pr-1 pb-4" style={{scrollbarWidth:'thin'}}>
-            {/* Departments Section */}
-            <div className="bg-white rounded-lg border border-gray-300 p-3 shadow-sm">
-              <div className="flex items-center justify-between mb-3 pb-1.5 border-b-2 border-[#FF9933]">
-                <h2 className="text-[#1A237E] font-bold text-sm flex items-center gap-1.5"><ClipboardList className="w-4 h-4" /> DEPARTMENTS</h2>
-                {departments.length > 10 && (
-                  <button
-                    onClick={() => setShowAllDepartments((prev) => !prev)}
-                    className="text-[#1A237E] text-sm font-medium hover:underline"
-                  >
-                    {showAllDepartments ? 'Show Less ←' : 'View All →'}
-                  </button>
-                )}
-              </div>
-              <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
-                {loadingDepartments ? (
-                  Array(5).fill(0).map((_, idx) => (
-                    <div key={idx} className="p-3 text-center animate-pulse">
-                      <div className="w-8 h-8 mx-auto mb-2 bg-gray-200 rounded-full"></div>
-                      <div className="h-3 bg-gray-200 rounded w-12 mx-auto"></div>
-                    </div>
-                  ))
-                ) : (
-                  (showAllDepartments ? departments : departments.slice(0, 10)).map((dept) => {
-                    const Icon = dept.icon;
-                    const deptPendingCount = tasksAssignedToMyDept.filter(
-                      (t) => t.assignedTo === dept.name && t.status !== "completed"
-                    ).length;
-
-                    return (
-                      <button
-                        key={dept.name}
-                        onClick={() => handleDepartmentClick(dept.name)}
-                        className={`p-2 text-center transition-all rounded-lg border ${selectedDept === dept.name
-                          ? "bg-[#1A237E] text-white border-[#FF9933] shadow-md"
-                          : "bg-white text-gray-700 border-gray-300 hover:border-[#FF9933] hover:shadow-sm"
-                          }`}
-                      >
-                        <Icon className={`w-5 h-5 mx-auto mb-1 ${selectedDept === dept.name ? "text-white" : "text-[#1A237E]"}`} />
-                        <p className={`text-[10px] font-bold ${selectedDept === dept.name ? "text-white" : "text-gray-700"}`}>
-                          {dept.name}
-                        </p>
-                        {deptPendingCount > 0 && (
-                          <span className={`inline-block mt-1 text-xs px-2 py-0.5 rounded-full ${selectedDept === dept.name
-                            ? "bg-[#FF9933] text-[#1A237E]"
-                            : "bg-red-500 text-white"
-                            }`}>
-                            {deptPendingCount}
-                          </span>
-                        )}
-                      </button>
-                    );
-                  })
-                )}
-              </div>
-            </div>
-
-            {/* Search Bar */}
-            <div className="relative">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
-              <input
-                type="text"
-                placeholder="Search tasks by title, description..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full rounded-lg border border-gray-200 bg-white py-1.5 pl-8 pr-4 text-sm focus:border-[#1A237E] focus:outline-none"
-              />
-            </div>
-
-            {/* Create Task Form */}
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-              {/* Header */}
-              <div className="flex items-center gap-2 px-4 py-2.5 bg-[#1A237E]">
-                <div className="w-5 h-5 rounded-full bg-[#FF9933] flex items-center justify-center">
-                  <Plus className="w-3 h-3 text-[#1A237E]" />
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 h-full">
+            {/* LEFT COLUMN */}
+            <div className="lg:col-span-8 h-full flex flex-col gap-3 overflow-y-auto pr-1 pb-4" style={{ scrollbarWidth: 'thin' }}>
+              {/* Departments Section */}
+              <div className="bg-white rounded-lg border border-gray-300 p-3 shadow-sm">
+                <div className="flex items-center justify-between mb-3 pb-1.5 border-b-2 border-[#FF9933]">
+                  <h2 className="text-[#1A237E] font-bold text-sm flex items-center gap-1.5"><ClipboardList className="w-4 h-4" /> DEPARTMENTS</h2>
+                  {departments.length > 10 && (
+                    <button
+                      onClick={() => setShowAllDepartments((prev) => !prev)}
+                      className="text-[#1A237E] text-sm font-medium hover:underline"
+                    >
+                      {showAllDepartments ? 'Show Less ←' : 'View All →'}
+                    </button>
+                  )}
                 </div>
-                <h3 className="text-white font-bold text-sm tracking-wide">CREATE NEW TASK</h3>
-              </div>
-
-              <div className="p-3 space-y-2.5">
-                {/* Title */}
-                <div>
-                  <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1 block">Task Title <span className="text-red-500">*</span></label>
-                  <input
-                    type="text"
-                    value={taskForm.title}
-                    onChange={(e) => setTaskForm({ ...taskForm, title: e.target.value })}
-                    placeholder="Enter task title..."
-                    className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm text-gray-800 placeholder-gray-400 focus:border-[#1A237E] focus:bg-white focus:outline-none transition"
-                  />
-                </div>
-
-                {/* Description */}
-                <div>
-                  <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1 block">Description</label>
-
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={handleImageUpload}
-                    accept="image/*"
-                    className="hidden"
-                  />
-
-                  {/* Toolbar */}
-                  <div className="flex items-center gap-0.5 border border-gray-200 rounded-t-lg px-2 py-1 bg-gray-50">
-                    <button type="button" onClick={toggleBold}
-                      className={`p-1 rounded text-gray-600 hover:bg-gray-200 transition ${editor?.isActive('bold') ? 'bg-[#1A237E] text-white' : ''}`}
-                      title="Bold">
-                      <Bold size={13} />
-                    </button>
-                    <button type="button" onClick={toggleItalic}
-                      className={`p-1 rounded text-gray-600 hover:bg-gray-200 transition ${editor?.isActive('italic') ? 'bg-[#1A237E] text-white' : ''}`}
-                      title="Italic">
-                      <Italic size={13} />
-                    </button>
-                    <button type="button" onClick={toggleStrike}
-                      className={`p-1 rounded text-gray-600 hover:bg-gray-200 transition ${editor?.isActive('strike') ? 'bg-[#1A237E] text-white' : ''}`}
-                      title="Strikethrough">
-                      <Type size={13} />
-                    </button>
-                    <div className="w-px h-4 bg-gray-300 mx-1" />
-                    <button type="button" onClick={toggleBulletList}
-                      className={`px-1.5 py-1 rounded text-xs text-gray-600 hover:bg-gray-200 transition ${editor?.isActive('bulletList') ? 'bg-[#1A237E] text-white' : ''}`}
-                      title="Bullet List">
-                      • List
-                    </button>
-                    <button type="button" onClick={toggleOrderedList}
-                      className={`px-1.5 py-1 rounded text-xs text-gray-600 hover:bg-gray-200 transition ${editor?.isActive('orderedList') ? 'bg-[#1A237E] text-white' : ''}`}
-                      title="Numbered List">
-                      1. List
-                    </button>
-                    <div className="w-px h-4 bg-gray-300 mx-1" />
-                    <button type="button" onClick={triggerFileInput}
-                      className="p-1 rounded text-gray-600 hover:bg-gray-200 transition"
-                      title="Upload Image">
-                      <ImageIcon size={13} />
-                    </button>
-                  </div>
-
-                  {/* Editor */}
-                  <div
-                    onDrop={handleImageDrop}
-                    onDragOver={(e) => e.preventDefault()}
-                    className="border border-gray-200 border-t-0 rounded-b-lg px-3 py-2 min-h-[100px] cursor-text bg-white text-sm"
-                    onClick={() => editor?.commands.focus()}
-                  >
-                    <EditorContent editor={editor} />
-                  </div>
-                </div>
-
-                {/* Footer */}
-                <div className="flex items-center justify-between pt-1">
-                  <p className="text-[10px] text-gray-400 flex items-center gap-1"><Paperclip className="w-3 h-3" /> Drag & drop or click image icon to attach</p>
-                  <button
-                    onClick={handleAssignTask}
-                    disabled={creatingTask}
-                    className={`flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-white text-xs font-semibold transition ${creatingTask
-                      ? "bg-gray-400 cursor-not-allowed"
-                      : "bg-[#1A237E] hover:bg-[#283593]"
-                    }`}
-                  >
-                    {creatingTask ? "Creating..." : <><Plus size={12} /> Create Task</>}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* RIGHT COLUMN */}
-          <div className="lg:col-span-4 space-y-3 overflow-y-auto pb-4" style={{scrollbarWidth:'thin'}}>
-
-            {/* Calendar Widget */}
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-              <div className="flex items-center justify-between px-4 py-2.5 bg-[#1A237E]">
-                <h2 className="text-white font-bold text-sm tracking-wide flex items-center gap-1.5">
-                  <CalendarIcon className="w-4 h-4 text-[#FF9933]" />
-                  {new Date(currentYear, currentMonth).toLocaleString('default', { month: 'long' }).toUpperCase()} {currentYear}
-                </h2>
-                <button onClick={() => setIsCalendarOpen(!isCalendarOpen)}
-                  className="p-1 rounded-md hover:bg-white/20 transition">
-                  <CalendarIcon className="w-4 h-4 text-[#FF9933]" />
-                </button>
-              </div>
-              {isCalendarOpen && (
-                <div className="p-3">
-                  <div className="grid grid-cols-7 mb-1">
-                    {weekDays.map((day) => (
-                      <div key={day.key} className="text-center text-[10px] font-bold text-gray-400 py-1">
-                        {day.label}
+                <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+                  {loadingDepartments ? (
+                    Array(5).fill(0).map((_, idx) => (
+                      <div key={idx} className="p-3 text-center animate-pulse">
+                        <div className="w-8 h-8 mx-auto mb-2 bg-gray-200 rounded-full"></div>
+                        <div className="h-3 bg-gray-200 rounded w-12 mx-auto"></div>
                       </div>
-                    ))}
-                  </div>
-                  <div className="grid grid-cols-7 gap-0.5">
-                    {calendarDays.map((day, idx) => {
-                      const isToday = day.date.toDateString() === new Date().toDateString();
-                      const hasTask = tasksAssignedToMyDept.some(
-                        (task) => task?.dueDate === day?.date?.toISOString().split("T")[0]
-                      );
-                      const isSelected = selectedDate && day.date.toDateString() === selectedDate.toDateString();
+                    ))
+                  ) : (
+                    (showAllDepartments ? departments : departments.slice(0, 10)).map((dept) => {
+                      const Icon = dept.icon;
+                      const deptPendingCount = tasksAssignedToMyDept.filter(
+                        (t) => t.assignedTo === dept.name && t.status !== "completed"
+                      ).length;
+
                       return (
-                        <button key={idx} onClick={() => handleDateClick(day.date)}
-                          className={`h-8 w-full rounded-md text-xs font-semibold transition flex flex-col items-center justify-center
-                            ${day.isCurrentMonth ? "text-gray-700" : "text-gray-300"}
-                            ${isSelected ? "bg-[#1A237E] text-white" : isToday ? "bg-[#FF9933] text-white" : "hover:bg-indigo-50"}`}>
-                          {day.date.getDate()}
-                          {hasTask && day.isCurrentMonth && !isSelected && (
-                            <div className="w-1 h-1 rounded-full bg-[#FF9933] mt-0.5" />
+                        <button
+                          key={dept.name}
+                          onClick={() => handleDepartmentClick(dept.name)}
+                          className={`p-2 text-center transition-all rounded-lg border ${selectedDept === dept.name
+                            ? "bg-[#1A237E] text-white border-[#FF9933] shadow-md"
+                            : "bg-white text-gray-700 border-gray-300 hover:border-[#FF9933] hover:shadow-sm"
+                            }`}
+                        >
+                          <Icon className={`w-5 h-5 mx-auto mb-1 ${selectedDept === dept.name ? "text-white" : "text-[#1A237E]"}`} />
+                          <p className={`text-[10px] font-bold ${selectedDept === dept.name ? "text-white" : "text-gray-700"}`}>
+                            {dept.name}
+                          </p>
+                          {deptPendingCount > 0 && (
+                            <span className={`inline-block mt-1 text-xs px-2 py-0.5 rounded-full ${selectedDept === dept.name
+                              ? "bg-[#FF9933] text-[#1A237E]"
+                              : "bg-red-500 text-white"
+                              }`}>
+                              {deptPendingCount}
+                            </span>
                           )}
                         </button>
                       );
-                    })}
+                    })
+                  )}
+                </div>
+              </div>
+
+              {/* Search Bar */}
+              <div className="relative">
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
+                <input
+                  type="text"
+                  placeholder="Search tasks by title, description..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="w-full rounded-lg border border-gray-200 bg-white py-1.5 pl-8 pr-4 text-sm focus:border-[#1A237E] focus:outline-none"
+                />
+              </div>
+
+              {/* Create Task Form */}
+              <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex-1 flex flex-col">
+                {/* Header */}
+                <div className="flex items-center gap-2 px-4 py-2.5 bg-[#1A237E]">
+                  <div className="w-5 h-5 rounded-full bg-[#FF9933] flex items-center justify-center">
+                    <Plus className="w-3 h-3 text-[#1A237E]" />
+                  </div>
+                  <h3 className="text-white font-bold text-sm tracking-wide">CREATE NEW TASK</h3>
+                </div>
+
+                <div className="p-3 b-14 flex flex-col flex-1 gap-2.5">
+                  {/* Title */}
+                  <div>
+                    <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1 block">Task Title <span className="text-red-500">*</span></label>
+                    <input
+                      type="text"
+                      value={taskForm.title}
+                      onChange={(e) => setTaskForm({ ...taskForm, title: e.target.value })}
+                      placeholder="Enter task title..."
+                      className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm text-gray-800 placeholder-gray-400 focus:border-[#1A237E] focus:bg-white focus:outline-none transition"
+                    />
+                  </div>
+
+                  {/* Description */}
+                  <div className="flex-1 flex flex-col">
+                    <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1 block">Description</label>
+
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={handleImageUpload}
+                      accept="image/*"
+                      className="hidden"
+                    />
+
+                    {/* Toolbar */}
+                    <div className="flex items-center gap-0.5 border border-gray-200 rounded-t-lg px-2 py-1 bg-gray-50">
+                      <button type="button" onClick={toggleBold}
+                        className={`p-1 rounded text-gray-600 hover:bg-gray-200 transition ${editor?.isActive('bold') ? 'bg-[#1A237E] text-white' : ''}`}
+                        title="Bold">
+                        <Bold size={13} />
+                      </button>
+                      <button type="button" onClick={toggleItalic}
+                        className={`p-1 rounded text-gray-600 hover:bg-gray-200 transition ${editor?.isActive('italic') ? 'bg-[#1A237E] text-white' : ''}`}
+                        title="Italic">
+                        <Italic size={13} />
+                      </button>
+                      <button type="button" onClick={toggleStrike}
+                        className={`p-1 rounded text-gray-600 hover:bg-gray-200 transition ${editor?.isActive('strike') ? 'bg-[#1A237E] text-white' : ''}`}
+                        title="Strikethrough">
+                        <Type size={13} />
+                      </button>
+                      <div className="w-px h-4 bg-gray-300 mx-1" />
+                      <button type="button" onClick={toggleBulletList}
+                        className={`px-1.5 py-1 rounded text-xs text-gray-600 hover:bg-gray-200 transition ${editor?.isActive('bulletList') ? 'bg-[#1A237E] text-white' : ''}`}
+                        title="Bullet List">
+                        • List
+                      </button>
+                      <button type="button" onClick={toggleOrderedList}
+                        className={`px-1.5 py-1 rounded text-xs text-gray-600 hover:bg-gray-200 transition ${editor?.isActive('orderedList') ? 'bg-[#1A237E] text-white' : ''}`}
+                        title="Numbered List">
+                        1. List
+                      </button>
+                      <div className="w-px h-4 bg-gray-300 mx-1" />
+                      <button type="button" onClick={triggerFileInput}
+                        className="p-1 rounded text-gray-600 hover:bg-gray-200 transition"
+                        title="Upload Image">
+                        <ImageIcon size={13} />
+                      </button>
+                    </div>
+
+                    {/* Editor */}
+                    <div
+                      onDrop={handleImageDrop}
+                      onDragOver={(e) => e.preventDefault()}
+                      className="border border-gray-200 border-t-0 rounded-b-lg px-3 py-2 flex-1 cursor-text bg-white text-sm overflow-y-auto"
+                      style={{ minHeight: '80px' }}
+                      onClick={() => editor?.commands.focus()}
+                    >
+                      <EditorContent editor={editor} />
+                    </div>
+                  </div>
+
+                  {/* Footer */}
+                  <div className="flex items-center justify-between">
+                    <p className="text-[10px] text-gray-400 flex items-center gap-1"><Paperclip className="w-3 h-3" /> Drag & drop or click image icon to attach</p>
+                    <button
+                      onClick={handleAssignTask}
+                      disabled={creatingTask}
+                      className={`flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-white text-xs font-semibold transition ${creatingTask
+                        ? "bg-gray-400 cursor-not-allowed"
+                        : "bg-[#1A237E] hover:bg-[#283593]"
+                        }`}
+                    >
+                      {creatingTask ? "Creating..." : <><Plus size={12} /> Create Task</>}
+                    </button>
                   </div>
                 </div>
-              )}
-            </div>
-
-            {/* Task Panel */}
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-              {/* Toggle Header */}
-              <div className="flex border-b border-gray-200">
-                <button onClick={() => setToggleView(1)}
-                  className={`flex-1 py-2 text-xs font-semibold transition border-b-2 ${toggleView === 1
-                    ? "border-[#1A237E] text-[#1A237E] bg-indigo-50"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50"}`}>
-                  <span className="flex items-center justify-center gap-1"><Send className="w-3 h-3" /> Assigned ({tasksISentCount})</span>
-                </button>
-                <div className="w-px bg-gray-200" />
-                <button onClick={() => setToggleView(0)}
-                  className={`flex-1 py-2 text-xs font-semibold transition border-b-2 ${toggleView === 0
-                    ? "border-[#1A237E] text-[#1A237E] bg-indigo-50"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50"}`}>
-                  <span className="flex items-center justify-center gap-1"><Inbox className="w-3 h-3" /> To Me ({pendingCount})</span>
-                </button>
-              </div>
-
-              {/* Task List */}
-              <div className="max-h-[320px] overflow-y-auto" style={{scrollbarWidth:'thin'}}>
-                {loading ? (
-                  <div className="text-center py-8 text-xs text-gray-400">Loading...</div>
-                ) : (toggleView === 1 ? filteredTasksIAssigned : filteredTasksAssignedToMe).length === 0 ? (
-                  <div className="text-center py-8 text-xs text-gray-400">No tasks found</div>
-                ) : (
-                  <div className="divide-y divide-gray-100">
-                    {(toggleView === 1 ? filteredTasksIAssigned : filteredTasksAssignedToMe).map((task) => (
-                      <div key={task._id} onClick={() => handleTaskClick(task)}
-                        className="flex items-start gap-2.5 px-3 py-2.5 hover:bg-gray-50 cursor-pointer transition group">
-                        <div className={`mt-1 w-2 h-2 rounded-full flex-shrink-0 ${task.status === "completed" ? "bg-emerald-500" : "bg-orange-400"}`} />
-                        <div className="flex-1 min-w-0">
-                          <p className={`text-xs font-semibold truncate ${task.status === "completed" ? "text-gray-400 line-through" : "text-gray-800"}`}>
-                            {task.title}
-                          </p>
-                          <p className="text-[10px] text-gray-400 mt-0.5">
-                            {toggleView === 1 ? `→ ${task.assignedTo}` : `← ${task.createdBy}`}
-                          </p>
-                        </div>
-                        <Eye className="w-3.5 h-3.5 text-gray-300 group-hover:text-gray-500 flex-shrink-0 mt-0.5 transition" />
-                      </div>
-                    ))}
-                  </div>
-                )}
               </div>
             </div>
 
-            {/* Selected Date Tasks */}
-            {selectedDate && (
+            {/* RIGHT COLUMN */}
+            <div className="lg:col-span-4 h-full flex flex-col gap-3 overflow-hidden pb-4">
+
+              {/* Calendar Widget */}
               <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
                 <div className="flex items-center justify-between px-4 py-2.5 bg-[#1A237E]">
-                  <h3 className="text-white font-bold text-xs flex items-center gap-1.5">
-                    <CalendarIcon className="w-3.5 h-3.5 text-[#FF9933]" />
-                    {selectedDate.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-                  </h3>
-                  <button onClick={() => setSelectedDate(null)}
-                    className="text-white/70 hover:text-white transition"><X className="w-3.5 h-3.5" /></button>
+                  <h2 className="text-white font-bold text-sm tracking-wide flex items-center gap-1.5">
+                    <CalendarIcon className="w-4 h-4 text-[#FF9933]" />
+                    {new Date(currentYear, currentMonth).toLocaleString('default', { month: 'long' }).toUpperCase()} {currentYear}
+                  </h2>
+                  <button onClick={() => setIsCalendarOpen(!isCalendarOpen)}
+                    className="p-1 rounded-md hover:bg-white/20 transition">
+                    <CalendarIcon className="w-4 h-4 text-[#FF9933]" />
+                  </button>
                 </div>
-
-                <div className="max-h-[260px] overflow-y-auto" style={{scrollbarWidth:'thin'}}>
-                  {dateLoading ? (
-                    <div className="text-center py-6">
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#1A237E] mx-auto" />
-                    </div>
-                  ) : selectedDateTasks.length === 0 ? (
-                    <div className="text-center py-6 text-xs text-gray-400">No tasks for this date</div>
-                  ) : (
-                    <div className="divide-y divide-gray-100">
-                      {selectedDateTasks.map((task) => (
-                        <div key={task._id} onClick={() => handleTaskClick(task)}
-                          className="flex items-start gap-2.5 px-3 py-2.5 hover:bg-gray-50 cursor-pointer transition group">
-                          <div className={`mt-1 w-2 h-2 rounded-full flex-shrink-0 ${task.status === "completed" ? "bg-emerald-500" : "bg-orange-400"}`} />
-                          <div className="flex-1 min-w-0">
-                            <p className={`text-xs font-semibold truncate ${task.status === "completed" ? "text-gray-400 line-through" : "text-gray-800"}`}>
-                              {task.title}
-                            </p>
-                            <p className="text-[10px] text-gray-400 mt-0.5">{task.assignedTo} ← {task.createdBy}</p>
-                          </div>
-                          <Eye className="w-3.5 h-3.5 text-gray-300 group-hover:text-gray-500 flex-shrink-0 mt-0.5 transition" />
+                {isCalendarOpen && (
+                  <div className="p-3">
+                    <div className="grid grid-cols-7 mb-1">
+                      {weekDays.map((day) => (
+                        <div key={day.key} className="text-center text-[10px] font-bold text-gray-400 py-1">
+                          {day.label}
                         </div>
                       ))}
                     </div>
-                  )}
-                </div>
-                {selectedDateTasks.length > 0 && (
-                  <div className="px-3 py-1.5 border-t bg-gray-50 text-[10px] text-gray-400">
-                    {selectedDateTasks.length} task{selectedDateTasks.length !== 1 ? 's' : ''}
+                    <div className="grid grid-cols-7 gap-0.5">
+                      {calendarDays.map((day, idx) => {
+                        const isToday = day.date.toDateString() === new Date().toDateString();
+                        const hasTask = tasksAssignedToMyDept.some(
+                          (task) => task?.dueDate === day?.date?.toISOString().split("T")[0]
+                        );
+                        const isSelected = selectedDate && day.date.toDateString() === selectedDate.toDateString();
+                        return (
+                          <button key={idx} onClick={() => handleDateClick(day.date)}
+                            className={`h-8 w-full rounded-md text-xs font-semibold transition flex flex-col items-center justify-center
+                            ${day.isCurrentMonth ? "text-gray-700" : "text-gray-300"}
+                            ${isSelected ? "bg-[#1A237E] text-white" : isToday ? "bg-[#FF9933] text-white" : "hover:bg-indigo-50"}`}>
+                            {day.date.getDate()}
+                            {hasTask && day.isCurrentMonth && !isSelected && (
+                              <div className="w-1 h-1 rounded-full bg-[#FF9933] mt-0.5" />
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
                 )}
               </div>
-            )}
+
+              {/* Task Panel — unified with 3 tabs */}
+              <div className=" bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+
+                {/* Tabs */}
+                <div className="  flex border-b border-gray-200">
+                  <button onClick={() => setToggleView(1)}
+                    className={`flex-1 py-2 text-xs font-semibold transition border-b-2 ${toggleView === 1
+                      ? "border-[#1A237E] text-[#1A237E] bg-indigo-50"
+                      : "border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50"}`}>
+                    <span className="flex items-center justify-center gap-1">
+                      <Send className="w-3 h-3" /> Assigned ({tasksISentCount})
+                    </span>
+                  </button>
+                  <div className="w-px bg-gray-200" />
+                  <button onClick={() => setToggleView(0)}
+                    className={`flex-1 py-2 text-xs font-semibold transition border-b-2 ${toggleView === 0
+                      ? "border-[#1A237E] text-[#1A237E] bg-indigo-50"
+                      : "border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50"}`}>
+                    <span className="flex items-center justify-center gap-1">
+                      <Inbox className="w-3 h-3" /> To Me ({pendingCount})
+                    </span>
+                  </button>
+                  {selectedDate && (
+                    <>
+                      <div className="w-px bg-gray-200" />
+                      <button onClick={() => setToggleView(2)}
+                        className={`flex-1 py-2 text-xs font-semibold transition border-b-2 relative ${toggleView === 2
+                          ? "border-[#FF9933] text-[#1A237E] bg-orange-50"
+                          : "border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50"}`}>
+                        <span className="flex items-center justify-center gap-1">
+                          <CalendarIcon className="w-3 h-3" />
+                          {selectedDate.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                        </span>
+                      </button>
+                    </>
+                  )}
+                </div>
+
+                {/* Tab: Assigned / To Me */}
+                {toggleView !== 2 && (
+                  <div className="max-h-[320px] overflow-y-auto" style={{ scrollbarWidth: 'thin' }}>
+                    {loading ? (
+                      <div className="text-center py-8 text-xs text-gray-400">Loading...</div>
+                    ) : (toggleView === 1 ? filteredTasksIAssigned : filteredTasksAssignedToMe).length === 0 ? (
+                      <div className="text-center py-8 text-xs text-gray-400">No tasks found</div>
+                    ) : (
+                      <div className="divide-y divide-gray-100">
+                        {(toggleView === 1 ? filteredTasksIAssigned : filteredTasksAssignedToMe).map((task) => (
+                          <div key={task._id} onClick={() => handleTaskClick(task)}
+                            className="flex items-start gap-2.5 px-3 py-2.5 hover:bg-gray-50 cursor-pointer transition group">
+                            <div className={`mt-1 w-2 h-2 rounded-full flex-shrink-0 ${task.status === "completed" ? "bg-emerald-500" : "bg-orange-400"}`} />
+                            <div className="flex-1 min-w-0">
+                              <p className={`text-xs font-semibold truncate ${task.status === "completed" ? "text-gray-400 line-through" : "text-gray-800"}`}>
+                                {task.title}
+                              </p>
+                              <p className="text-[10px] text-gray-400 mt-0.5">
+                                {toggleView === 1 ? `→ ${task.assignedTo}` : `← ${task.createdBy}`}
+                              </p>
+                            </div>
+                            <Eye className="w-3.5 h-3.5 text-gray-300 group-hover:text-gray-500 flex-shrink-0 mt-0.5 transition" />
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Tab: Date Tasks */}
+                {toggleView === 2 && selectedDate && (
+                  <div className="max-h-[320px] overflow-y-auto" style={{ scrollbarWidth: 'thin' }}>
+                    {/* Date header row */}
+                    <div className="flex items-center justify-between px-3 py-2 bg-orange-50 border-b border-orange-100">
+                      <span className="text-xs font-semibold text-[#1A237E]">
+                        {selectedDate.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
+                      </span>
+                      <button onClick={() => { setSelectedDate(null); setToggleView(0); }}
+                        className="text-gray-400 hover:text-gray-600 transition">
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                    {dateLoading ? (
+                      <div className="flex items-center justify-center py-8">
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#1A237E]" />
+                      </div>
+                    ) : selectedDateTasks.length === 0 ? (
+                      <div className="text-center py-8 text-xs text-gray-400">No tasks for this date</div>
+                    ) : (
+                      <div className="divide-y divide-gray-100">
+                        {selectedDateTasks.map((task) => (
+                          <div key={task._id} onClick={() => handleTaskClick(task)}
+                            className="flex items-start gap-2.5 px-3 py-2.5 hover:bg-gray-50 cursor-pointer transition group">
+                            <div className={`mt-1 w-2 h-2 rounded-full flex-shrink-0 ${task.status === "completed" ? "bg-emerald-500" : "bg-orange-400"}`} />
+                            <div className="flex-1 min-w-0">
+                              <p className={`text-xs font-semibold truncate ${task.status === "completed" ? "text-gray-400 line-through" : "text-gray-800"}`}>
+                                {task.title}
+                              </p>
+                              <p className="text-[10px] text-gray-400 mt-0.5">{task.assignedTo} ← {task.createdBy}</p>
+                            </div>
+                            <Eye className="w-3.5 h-3.5 text-gray-300 group-hover:text-gray-500 flex-shrink-0 mt-0.5 transition" />
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {selectedDateTasks.length > 0 && (
+                      <div className="px-3 py-1.5 border-t bg-gray-50 text-[10px] text-gray-400">
+                        {selectedDateTasks.length} task{selectedDateTasks.length !== 1 ? 's' : ''}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
-        </div>
         </div>
       </main>
 
