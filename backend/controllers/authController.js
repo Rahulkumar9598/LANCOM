@@ -18,17 +18,8 @@ export const login = async (req, res) => {
       });
     }
 
-    // Block login if service subscription has expired
-    if (department.serviceExpiresAt && new Date(department.serviceExpiresAt) < new Date()) {
-      return res.status(403).json({ success: false, message: 'Service expired. Please purchase subscription.' });
-    }
-
-    // Check if department is active
+    // Only block inactive accounts — service expiry is handled by frontend redirect
     if (department.status !== 'active') {
-      // Check if service subscription is expired
-      if (department.serviceExpiresAt && new Date(department.serviceExpiresAt) < new Date()) {
-        return res.status(403).json({ success: false, message: 'Service expired. Please purchase subscription.' });
-      }
       return res.status(401).json({
         success: false,
         message: 'Account is inactive. Please contact admin.'
@@ -70,7 +61,8 @@ export const login = async (req, res) => {
         phone: department.phone,
         headName: department.headName,
         description: department.description,
-        status: department.status
+        status: department.status,
+        serviceExpiresAt: department.serviceExpiresAt || null,
       }
     });
   } catch (error) {

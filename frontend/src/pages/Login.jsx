@@ -841,10 +841,13 @@ const Login = () => {
         localStorage.setItem('token', res.data.token);
         localStorage.setItem('department', JSON.stringify(res.data.department));
 
-        showToast(LoginConfig.messages.loginSuccess, 'success');
+        // Redirect expired users to subscription page instead of dashboard
+        const dept = res.data.department;
+        const isExpired = dept.serviceExpiresAt && new Date(dept.serviceExpiresAt) < new Date();
 
+        showToast(LoginConfig.messages.loginSuccess, 'success');
         setTimeout(() => {
-          navigate('/dashboard');
+          navigate(isExpired ? '/service-expired' : '/dashboard');
         }, 500);
       } else {
         showToast(result.error || LoginConfig.messages.loginFailed, 'error');

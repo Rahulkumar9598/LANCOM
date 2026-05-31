@@ -47,6 +47,8 @@ import { initSocket } from "./utils/socket.js";
 import authRoutes from "./routes/authRoutes.js";
 import taskRoutes from "./routes/tasks.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import subscriptionRoutes from "./routes/subscriptionRoutes.js";
+import SubscriptionPlan from "./models/SubscriptionPlan.js";
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -82,22 +84,23 @@ app.use("/uploads", express.static(uploadDir));
 app.use("/api/auth", authRoutes);
 app.use("/api/task", taskRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/subscription", subscriptionRoutes);
 
 // Test route
-app.get("/", (req, res) => {
+app.get("/", (_req, res) => {
   res.json({ message: "Backend is running...", status: "ok" });
 });
 
 // 404 handler
-app.use((req, res) => {
+app.use((_req, res) => {
   res.status(404).json({
     success: false,
-    message: `Route ${req.method} ${req.url} not found`
+    message: `Route ${_req.method} ${_req.url} not found`
   });
 });
 
 // Error handler
-app.use((err, req, res, next) => {
+app.use((err, _req, res, _next) => {
   console.error('Error:', err);
   res.status(500).json({
     success: false,
@@ -106,13 +109,21 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Database connection
-connectDB();
-
 const PORT = process.env.PORT || 5000;
-const server = app.listen(PORT, () => {
+const server = app.listen(PORT, async () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📁 Uploads folder: ${uploadDir}`);
+  await connectDB();
+  // Seed default plans on first run
+  const count = await SubscriptionPlan.countDocuments();
+  if (count === 0) {
+    await SubscriptionPlan.insertMany([
+      { name: 'Basic',    months: 6,  price: 999,  description: '6 months access', features: ['Task Management', 'Department Access', 'Email Support'] },
+      { name: 'Standard', months: 12, price: 1799, description: '1 year access',   features: ['Task Management', 'Department Access', 'Priority Support', 'Reports'] },
+      { name: 'Pro',      months: 24, price: 2999, description: '2 years access',  features: ['Task Management', 'Department Access', 'Priority Support', 'Reports', 'Custom Branding'] },
+    ]);
+    console.log('✅ Default subscription plans seeded');
+  }
 });
 
 const io = initSocket(server);

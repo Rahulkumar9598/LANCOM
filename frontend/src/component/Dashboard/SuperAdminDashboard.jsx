@@ -3,11 +3,14 @@ import API from '../../services/axiosConfig';
 import ConstantApi from '../../services/endpoints';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+import { CreditCard } from 'lucide-react';
 
 export default function SuperAdminDashboard() {
   const [admins, setAdmins] = useState([]);
   const [loading, setLoading] = useState(false);
   const { department } = useSelector(state => state.auth);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAdmins = async () => {
@@ -33,7 +36,15 @@ export default function SuperAdminDashboard() {
 
   return (
     <div className="min-h-screen bg-[#F5F5DC] p-6">
-      <h1 className="text-2xl font-bold mb-4 text-[#1A237E]">Super Admin Dashboard - Admin List</h1>
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-2xl font-bold text-[#1A237E]">Super Admin Dashboard</h1>
+        <button
+          onClick={() => navigate('/superadmin/subscriptions')}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#1A237E] text-white text-sm font-semibold hover:bg-[#283593] transition"
+        >
+          <CreditCard className="w-4 h-4" /> Manage Subscriptions
+        </button>
+      </div>
       {loading ? (
         <p className="text-gray-600">Loading admins...</p>
       ) : (

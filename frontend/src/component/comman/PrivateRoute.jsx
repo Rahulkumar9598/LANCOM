@@ -1,34 +1,20 @@
-import React, { useEffect } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { Navigate } from 'react-router-dom';
 
 const PrivateRoute = ({ children, adminOnly = false, superAdminOnly = false }) => {
   const token = localStorage.getItem('token');
   const department = JSON.parse(localStorage.getItem('department') || '{}');
-  const navigate = useNavigate();
 
-  // Redirect if service expired
-  useEffect(() => {
-    if (department.serviceExpiresAt && new Date(department.serviceExpiresAt) < new Date()) {
-      // Clear auth data
-      localStorage.removeItem('token');
-      localStorage.removeItem('department');
-      // Notify user
-      alert('Service expired. Please purchase subscription.');
-      navigate('/service-expired');
-    }
-  }, []);
+  if (!token) return <Navigate to="/" replace />;
 
-  if (!token) {
-    return <Navigate to="/" />;
+  // Check service expiry synchronously — no useEffect flash
+  if (department.serviceExpiresAt && new Date(department.serviceExpiresAt) < new Date()) {
+    return <Navigate to="/service-expired" replace />;
   }
-  
-  if (adminOnly && department.role !== 'admin') {
-    return <Navigate to="/dashboard" />;
-  }
-  if (superAdminOnly && department.role !== 'superadmin') {
-    return <Navigate to="/dashboard" />;
-  }
-  
+
+  if (adminOnly && department.role !== 'admin') return <Navigate to="/dashboard" replace />;
+  if (superAdminOnly && department.role !== 'superadmin') return <Navigate to="/dashboard" replace />;
+
   return children;
 };
 

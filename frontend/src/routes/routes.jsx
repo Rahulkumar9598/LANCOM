@@ -5,6 +5,8 @@ import Dashboard from "../component/Dashboard/Dashboard";
 import AdminProfile from "../pages/AdminProfile";
 import SuperAdminDashboard from "../component/Dashboard/SuperAdminDashboard";
 import ServiceExpired from "../pages/ServiceExpired";
+import SuperAdminSubscriptions from "../pages/SuperAdminSubscriptions";
+import AdminSubscription from "../pages/AdminSubscription";
 import PrivateRoute from "../component/comman/PrivateRoute";
 import Register from "../pages/Register";
 
@@ -46,10 +48,26 @@ export const routes = createBrowserRouter([
         element: <ServiceExpired />
       },
       {
+        path: "/superadmin/subscriptions",
+        element: (
+          <PrivateRoute superAdminOnly={true}>
+            <SuperAdminSubscriptions />
+          </PrivateRoute>
+        ),
+      },
+      {
         path: "/admin/profile",
         element: (
           <PrivateRoute adminOnly={true}>
             <AdminProfile />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/admin/subscription",
+        element: (
+          <PrivateRoute adminOnly={true}>
+            <AdminSubscription />
           </PrivateRoute>
         ),
       },

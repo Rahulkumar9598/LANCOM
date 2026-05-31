@@ -56,6 +56,10 @@ const departmentSchema = new mongoose.Schema({
   serviceDurationMonths: {
     type: Number,
     default: null
+  },
+  lastSeenAt: {
+    type: Date,
+    default: null
   }
 }, {
   timestamps: true

@@ -1298,6 +1298,8 @@ import {
   Send,
   Inbox,
   Paperclip,
+  ShieldCheck,
+  Clock,
 } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { LogOut } from 'lucide-react';
@@ -1584,6 +1586,29 @@ const Dashboard = () => {
     getTasksAssignedToMe();
     getTasksCreatedByMe();
   }, []);
+
+  // ── Subscription status + countdown ──────────────────────────────────────
+  const [subStatus, setSubStatus] = useState(null);
+  const [subCountdown, setSubCountdown] = useState(null);
+  const subTimerRef = useRef(null);
+
+  useEffect(() => {
+    API.get('/subscription/status').then(r => setSubStatus(r.data)).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    if (!subStatus?.expiresAt || subStatus?.noExpiry) { setSubCountdown(null); return; }
+    const tick = () => {
+      const diff = new Date(subStatus.expiresAt) - Date.now();
+      if (diff <= 0) { setSubCountdown({ h:0, m:0, s:0, total:0 }); return; }
+      const total = Math.floor(diff / 1000);
+      setSubCountdown({ h: Math.floor(total/3600), m: Math.floor((total%3600)/60), s: total%60, total });
+    };
+    tick();
+    subTimerRef.current = setInterval(tick, 1000);
+    return () => clearInterval(subTimerRef.current);
+  }, [subStatus?.expiresAt]);
+
 
   useEffect(() => {
     socketRef.current = io(import.meta.env.VITE_BACKEND_URL, {
@@ -2108,6 +2133,13 @@ const Dashboard = () => {
                         <Plus size={13} className="text-gray-400" />
                         Register Department
                       </button>
+                      <button
+                        onClick={() => { setIsDropdownOpen(false); navigate('/admin/subscription'); }}
+                        className="w-full flex items-center gap-2.5 px-4 py-2 text-gray-600 hover:bg-indigo-50 hover:text-[#1A237E] transition text-xs"
+                      >
+                        <ShieldCheck size={13} className="text-gray-400" />
+                        Subscription
+                      </button>
                     </div>
                   )}
 
@@ -2127,6 +2159,44 @@ const Dashboard = () => {
           </div>
         </div>
       </nav>
+
+      {/* ── Subscription warning banner ── */}
+      {subStatus && !subStatus.noExpiry && (() => {
+        const expired = !subStatus.isActive;
+        const showCountdown = subCountdown && subCountdown.total > 0 && subCountdown.total < 86400;
+        const showExpiredNow = subCountdown && subCountdown.total === 0;
+        const warnDays = subStatus.isActive && subStatus.daysLeft <= 7 && !showCountdown;
+
+        if (!expired && !showCountdown && !showExpiredNow && !warnDays) return null;
+
+        return (
+          <div className={`flex items-center justify-between px-4 py-1.5 text-xs font-medium
+            ${expired || showExpiredNow
+              ? 'bg-red-500 text-white'
+              : subCountdown && subCountdown.total < 300
+              ? 'bg-red-400 text-white animate-pulse'
+              : 'bg-orange-400 text-white'}`}>
+            <div className="flex items-center gap-2">
+              {(expired || showExpiredNow)
+                ? <ShieldCheck className="w-3.5 h-3.5 opacity-80" />
+                : <Clock className="w-3.5 h-3.5 opacity-80" />}
+              {expired
+                ? 'Your subscription has expired. Upload an activation file to restore access.'
+                : showCountdown
+                ? <>Subscription expiring in&nbsp;
+                    <span className="font-mono font-bold tracking-wider">
+                      {String(subCountdown.h).padStart(2,'0')}:{String(subCountdown.m).padStart(2,'0')}:{String(subCountdown.s).padStart(2,'0')}
+                    </span>
+                  </>
+                : `Subscription expires in ${subStatus.daysLeft} day${subStatus.daysLeft !== 1 ? 's' : ''}. Renew soon.`}
+            </div>
+            <button onClick={() => navigate('/admin/subscription')}
+              className="underline underline-offset-2 opacity-90 hover:opacity-100 whitespace-nowrap ml-4">
+              {expired ? 'Activate now →' : 'View details →'}
+            </button>
+          </div>
+        );
+      })()}
 
       <main className="flex-1 overflow-hidden w-full">
         <div className="max-w-[1450px] mx-auto px-4 py-3 h-full">
@@ -2400,7 +2470,7 @@ const Dashboard = () => {
                         {(toggleView === 1 ? filteredTasksIAssigned : filteredTasksAssignedToMe).map((task) => (
                           <div key={task._id} onClick={() => handleTaskClick(task)}
                             className="flex items-start gap-2.5 px-3 py-2.5 hover:bg-gray-50 cursor-pointer transition group">
-                            <div className={`mt-1 w-2 h-2 rounded-full flex-shrink-0 ${task.status === "completed" ? "bg-emerald-500" : "bg-orange-400"}`} />
+                            <div className={`mt-1 w-2 h-2 rounded-full flex-shrink-0 ${task.status === "completed" ? "bg-emerald-500" : "bg-orange-400 animate-pulse"}`} />
                             <div className="flex-1 min-w-0">
                               <p className={`text-xs font-semibold truncate ${task.status === "completed" ? "text-gray-400 line-through" : "text-gray-800"}`}>
                                 {task.title}
@@ -2441,7 +2511,7 @@ const Dashboard = () => {
                         {selectedDateTasks.map((task) => (
                           <div key={task._id} onClick={() => handleTaskClick(task)}
                             className="flex items-start gap-2.5 px-3 py-2.5 hover:bg-gray-50 cursor-pointer transition group">
-                            <div className={`mt-1 w-2 h-2 rounded-full flex-shrink-0 ${task.status === "completed" ? "bg-emerald-500" : "bg-orange-400"}`} />
+                            <div className={`mt-1 w-2 h-2 rounded-full flex-shrink-0 ${task.status === "completed" ? "bg-emerald-500" : "bg-orange-400 animate-pulse"}`} />
                             <div className="flex-1 min-w-0">
                               <p className={`text-xs font-semibold truncate ${task.status === "completed" ? "text-gray-400 line-through" : "text-gray-800"}`}>
                                 {task.title}
