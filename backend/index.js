@@ -49,6 +49,7 @@ import taskRoutes from "./routes/tasks.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import subscriptionRoutes from "./routes/subscriptionRoutes.js";
 import SubscriptionPlan from "./models/SubscriptionPlan.js";
+import departmentRoutes from "./routes/departmentRoutes.js";
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -85,6 +86,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/task", taskRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/subscription", subscriptionRoutes);
+app.use("/api/department", departmentRoutes);
 
 // Test route
 app.get("/", (_req, res) => {
