@@ -2034,7 +2034,6 @@ const Dashboard = () => {
         
         .ProseMirror {
           outline: none;
-          min-height: 150px;
         }
         
         .ProseMirror p {
@@ -2085,7 +2084,7 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {department.department.role === "admin"} <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3">
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -2139,6 +2138,25 @@ const Dashboard = () => {
                       >
                         <ShieldCheck size={13} className="text-gray-400" />
                         Subscription
+                      </button>
+                    </div>
+                  )}
+
+                  {department?.department?.role === "department" && (
+                    <div className="py-1.5 border-b border-gray-100">
+                      <button
+                        onClick={() => { setIsDropdownOpen(false); navigate('/department/profile'); }}
+                        className="w-full flex items-center gap-2.5 px-4 py-2 text-gray-600 hover:bg-indigo-50 hover:text-[#1A237E] transition text-xs"
+                      >
+                        <Building2 size={13} className="text-gray-400" />
+                        My Profile
+                      </button>
+                      <button
+                        onClick={() => { setIsDropdownOpen(false); navigate('/department/register-employee'); }}
+                        className="w-full flex items-center gap-2.5 px-4 py-2 text-gray-600 hover:bg-indigo-50 hover:text-[#1A237E] transition text-xs"
+                      >
+                        <Users size={13} className="text-gray-400" />
+                        Register Employee
                       </button>
                     </div>
                   )}
@@ -2272,24 +2290,24 @@ const Dashboard = () => {
               </div>
 
               {/* Create Task Form */}
-              <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex-1 flex flex-col">
+              <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex-1 flex flex-col max-h-[80vh] sticky top-0 z-10">
                 {/* Header */}
-                <div className="flex items-center gap-2 px-4 py-2.5 bg-[#1A237E]">
+                <div className="flex items-center gap-2 px-4 py-2.5 bg-[#1A237E] sticky top-0 z-20">
                   <div className="w-5 h-5 rounded-full bg-[#FF9933] flex items-center justify-center">
                     <Plus className="w-3 h-3 text-[#1A237E]" />
                   </div>
                   <h3 className="text-white font-bold text-sm tracking-wide">CREATE NEW TASK</h3>
                 </div>
 
-                <div className="p-3 b-14 flex flex-col flex-1 gap-2.5">
+                <div className="p-3 b-14 flex flex-col flex-1 gap-2.5 overflow-y-auto hide-scrollbar">
                   {/* Title */}
                   <div>
-                    <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1 block">Task Title <span className="text-red-500">*</span></label>
+                    <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1 block">Task Title</label>
                     <input
                       type="text"
                       value={taskForm.title}
                       onChange={(e) => setTaskForm({ ...taskForm, title: e.target.value })}
-                      placeholder="Enter task title..."
+                      placeholder="Task Title *"
                       className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm text-gray-800 placeholder-gray-400 focus:border-[#1A237E] focus:bg-white focus:outline-none transition"
                     />
                   </div>
@@ -2346,8 +2364,8 @@ const Dashboard = () => {
                     <div
                       onDrop={handleImageDrop}
                       onDragOver={(e) => e.preventDefault()}
-                      className="border border-gray-200 border-t-0 rounded-b-lg px-3 py-2 flex-1 cursor-text bg-white text-sm overflow-y-auto"
-                      style={{ minHeight: '80px' }}
+                      className="border border-gray-200 border-t-0 rounded-b-lg px-3 py-2 flex-1 cursor-text bg-white text-sm overflow-y-auto custom-scrollbar"
+                      style={{ minHeight: '80px', maxHeight: '30vh' }}
                       onClick={() => editor?.commands.focus()}
                     >
                       <EditorContent editor={editor} />
@@ -2355,18 +2373,18 @@ const Dashboard = () => {
                   </div>
 
                   {/* Footer */}
-                  <div className="flex items-center justify-between">
-                    <p className="text-[10px] text-gray-400 flex items-center gap-1"><Paperclip className="w-3 h-3" /> Drag & drop or click image icon to attach</p>
+                  <div className="flex flex-col bg-white p-2 sticky bottom-0 z-10">
                     <button
                       onClick={handleAssignTask}
                       disabled={creatingTask}
-                      className={`flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-white text-xs font-semibold transition ${creatingTask
+                      className={`flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-lg text-white text-xs font-semibold transition ${creatingTask
                         ? "bg-gray-400 cursor-not-allowed"
                         : "bg-[#1A237E] hover:bg-[#283593]"
                         }`}
                     >
                       {creatingTask ? "Creating..." : <><Plus size={12} /> Create Task</>}
                     </button>
+                    <p className="text-[10px] text-gray-400 flex items-center justify-center gap-1 mt-2"><Paperclip className="w-3 h-3" /> Drag & drop or click image icon to attach</p>
                   </div>
                 </div>
               </div>

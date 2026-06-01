@@ -9,7 +9,8 @@ import SuperAdminSubscriptions from "../pages/SuperAdminSubscriptions";
 import AdminSubscription from "../pages/AdminSubscription";
 import PrivateRoute from "../component/comman/PrivateRoute";
 import Register from "../pages/Register";
-
+import DepartmentProfile from "../pages/DepartmentProfile";
+import RegisterEmployee from "../pages/RegisterEmployee";
 export const routes = createBrowserRouter([
   {
     path: "",
@@ -68,6 +69,22 @@ export const routes = createBrowserRouter([
         element: (
           <PrivateRoute adminOnly={true}>
             <AdminSubscription />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/department/profile",
+        element: (
+          <PrivateRoute>
+            <DepartmentProfile />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/department/register-employee",
+        element: (
+          <PrivateRoute>
+            <RegisterEmployee />
           </PrivateRoute>
         ),
       },

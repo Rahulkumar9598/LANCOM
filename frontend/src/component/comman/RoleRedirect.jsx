@@ -11,7 +11,7 @@ export default function RoleRedirect() {
     if (!department?.role) return;
     if (department.role === 'superadmin') {
       navigate('/superadmin/dashboard', { replace: true });
-    } else if (department.role === 'admin') {
+    } else if (department.role === 'admin' || department.role === 'department') {
       navigate('/dashboard', { replace: true });
     }
   }, [department, navigate]);

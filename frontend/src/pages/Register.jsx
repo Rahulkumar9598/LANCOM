@@ -66,7 +66,7 @@ const Icons = {
 
 // Helper function to get icon component
 const getIcon = (iconName) => {
-  switch(iconName) {
+  switch (iconName) {
     case 'Building2': return Icons.Building2;
     case 'Mail': return Icons.Mail;
     case 'Lock': return Icons.Lock;
@@ -124,40 +124,40 @@ const Register = () => {
 
   const validateForm = () => {
     const errors = {};
-    
+
     if (!formData.department.trim()) {
       errors.department = "Department name is required";
     }
-    
+
     if (!formData.email.trim()) {
       errors.email = "Email is required";
     } else if (!/^[^\s@]+@([^\s@]+\.)+[^\s@]+$/.test(formData.email)) {
       errors.email = "Please enter a valid email address";
     }
-    
+
     if (!formData.password) {
       errors.password = "Password is required";
     } else if (formData.password.length < 6) {
       errors.password = "Password must be at least 6 characters";
     }
-    
+
     if (formData.password !== formData.confirmPassword) {
       errors.confirmPassword = "Passwords do not match";
     }
-    
-  if (formData.phone && !/^[6-9]\d{9}$/.test(formData.phone)) {
-  errors.phone = "Enter a valid 10-digit phone number starting with 6-9";
-}
-    
+
+    if (formData.phone && !/^[6-9]\d{9}$/.test(formData.phone)) {
+      errors.phone = "Enter a valid 10-digit phone number starting with 6-9";
+    }
+
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
-    
+
     setIsLoading(true);
     try {
       const departmentData = {
@@ -169,13 +169,13 @@ const Register = () => {
         headName: formData.headName || '',
         role: formData.department.toUpperCase() === 'ADMIN' ? 'admin' : 'department' // Auto set role
       };
-      
+
       console.log("Sending data:", departmentData);
-      
+
       // Replace with your actual API endpoint
-      const response = await API.post(ConstantApi.admin.registerDeparment , departmentData);
-      console.log( response , " this is my register response")
-      
+      const response = await API.post(ConstantApi.admin.registerDeparment, departmentData);
+      console.log(response, " this is my register response")
+
       if (response.data.success) {
         showToast(response.data.message || `Department "${formData.department}" registered successfully!`, 'success');
         // Reset form
@@ -214,20 +214,19 @@ const Register = () => {
   return (
     <div className="h-full relative overflow-hidden bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900">
       <button
-  onClick={() => navigate(-1)}
-  className="fixed top-4 left-4 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white rounded-full p-2 transition-all duration-200 shadow-lg z-50"
-  aria-label="Back to Dashboard"
->
-  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-  </svg>
-</button>
+        onClick={() => navigate(-1)}
+        className="fixed top-4 left-4 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white rounded-full p-2 transition-all duration-200 shadow-lg z-50"
+        aria-label="Back to Dashboard"
+      >
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+      </button>
       {/* Toast Notification */}
       {toastMessage && (
         <div className="fixed top-4 right-4 z-50 animate-fade-in-down">
-          <div className={`${
-            toastType === 'success' ? 'bg-green-500' : 'bg-red-500'
-          } text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2`}>
+          <div className={`${toastType === 'success' ? 'bg-green-500' : 'bg-red-500'
+            } text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2`}>
             {toastType === 'success' ? '✅' : '❌'}
             <span>{toastMessage}</span>
           </div>
@@ -244,7 +243,7 @@ const Register = () => {
       {/* Main Content */}
       <div className="relative h-full flex items-center justify-center p-4 overflow-y-auto">
         <div className="max-w-5xl w-full grid lg:grid-cols-2 gap-6 items-center">
-          
+
           {/* Left Side - Branding */}
           <div className="hidden lg:block text-white space-y-4">
             <div className="flex items-center gap-3">

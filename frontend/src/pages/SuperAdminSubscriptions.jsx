@@ -103,6 +103,8 @@ const SuperAdminSubscriptions = () => {
       a.download = `${admin.department}_activation.lca`;
       a.click();
       URL.revokeObjectURL(url);
+      // Refresh activation history to reflect the new subscription immediately
+      fetchHistory();
     } catch (e) {
       alert(e.response?.data?.message || 'Failed to generate file');
     } finally {
